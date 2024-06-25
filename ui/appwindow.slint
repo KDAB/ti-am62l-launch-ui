@@ -1,0 +1,11 @@
+import { Spinner } from "std-widgets.slint";
+
+export component AppWindow inherits Window {
+    width: 1920px;
+    height: 1080px;
+
+    Spinner {
+        progress: 42%;
+        indeterminate: true;
+    }
+}
