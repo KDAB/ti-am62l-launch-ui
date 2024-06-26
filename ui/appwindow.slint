@@ -7,8 +7,8 @@ export component AppWindow inherits Window {
     Rectangle {
         x: root.move-rectangles ? root.width - self.width : 0;
         y: 0px;
-        width: 40px;
-        height: 40px;
+        width: 270px;
+        height: 270px;
         background: blue;
         animate x {
             duration: 5000ms;
@@ -18,9 +18,33 @@ export component AppWindow inherits Window {
 
     Rectangle {
         x: root.move-rectangles ? 0 : root.width - self.width;
-        y: root.height - self.height;
-        width: 40px;
-        height: 40px;
+        y: 270px;
+        width: 270px;
+        height: 270px;
+        background: blue;
+        animate x {
+            duration: 5000ms;
+            easing: linear;
+        }
+    }
+
+    Rectangle {
+        x: root.move-rectangles ? root.width - self.width : 0;
+        y: 540px;
+        width: 270px;
+        height: 270px;
+        background: blue;
+        animate x {
+            duration: 5000ms;
+            easing: linear;
+        }
+    }
+
+    Rectangle {
+        x: root.move-rectangles ? 0 : root.width - self.width;
+        y: 810px;
+        width: 270px;
+        height: 270px;
         background: blue;
         animate x {
             duration: 5000ms;
