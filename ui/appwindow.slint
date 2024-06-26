@@ -1,20 +1,14 @@
 import { ProgressIndicator } from "std-widgets.slint";
 
 export component AppWindow inherits Window {
-    in-out property <length> rect-x: root.width - rect.width;
-
     width: 1920px;
     height: 1080px;
 
-    rect := Rectangle {
-        x <=> rect-x;
-        y: 0px;
-        width: 40px;
-        height: 40px;
-        background: blue;
-        animate x {
-            duration: 5000ms;
-            easing: linear;
-        }
+    ProgressIndicator {
+        width: 200px;
+        height: 20px;
+
+        progress: 0%;
+        indeterminate: true;
     }
 }

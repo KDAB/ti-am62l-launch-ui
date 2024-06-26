@@ -37,7 +37,7 @@ ssh $HOST 'nohup bash -c "( ( ./system_info_collector -l debug -a collect-and-co
 ## wait
 ssh $HOST -C "sleep 10s"
 ## start binary under test
-ssh $HOST 'nohup bash -c "( ( DISPLAY=:0 SLINT_BACKEND='$BACKEND' SLINT_FULLSCREEN=:1 ./AM62L_benchmark_ui &>/dev/null ) & )"'
+ssh $HOST 'nohup bash -c "( ( DISPLAY=:0 SLINT_BACKEND='$BACKEND' SLINT_FULLSCREEN=:1 SLINT_STYLE=fluent-dark ./AM62L_benchmark_ui &>/dev/null ) & )"'
 # wait
 ssh $HOST -C "sleep 20s"
 # terminate binary under test

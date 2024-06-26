@@ -5,7 +5,7 @@ context = "."
 [build.env]
 passthrough = [
     "SLINT_NO_QT",
-    "SLINT_STYLE",
+    "SLINT_STYLE=fluent-dark",
     "SLINT_TEST_FILTER",
     "SLINT_INTERPRETER_ERROR_WHITELIST",
 ]
