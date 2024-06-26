@@ -24,8 +24,8 @@ with BeaglePlay boards.
     ```
     $ ./cpu_cores_disable.sh beagleplay
     ```
-3. run `build_deploy_and_run_benchmark_on_target.sh` to perform a benchmark, e.g.
+3. run `benchmark_start.sh` to perform all relevant benchmarks, e.g.
     ```
-    $ ./build_deploy_and_run_benchmark_on_target.sh beagleplay winit-software
+    $ ./benchmark_start.sh beagleplay itr-42
     ```
-4. wait for the benchmark plot to be opened in the browser on your host machine
+4. wait for the benchmark plots to be opened in the browser on your host machine

@@ -2,6 +2,7 @@
 # TODO we can probably do things nicer throughout this script
 HOST=$1
 BACKEND=$2
+ITERATION_PREFIX=$3
 
 BROWSER=firefox
 REMOTE_TARGET_DIR=/home/debian # default user for BeaglePlay distro is 'debian'
@@ -36,11 +37,11 @@ ssh $HOST 'nohup bash -c "( ( ./system_info_collector -l debug -a collect-and-co
 ## wait
 ssh $HOST -C "sleep 10s"
 ## start binary under test
-# ssh $HOST 'nohup bash -c "( ( DISPLAY=:0 SLINT_BACKEND='$BACKEND' SLINT_FULLSCREEN=:1 ./AM62L_benchmark_ui &>/dev/null ) & )"'
+ssh $HOST 'nohup bash -c "( ( DISPLAY=:0 SLINT_BACKEND='$BACKEND' SLINT_FULLSCREEN=:1 ./AM62L_benchmark_ui &>/dev/null ) & )"'
 # wait
 ssh $HOST -C "sleep 20s"
 # terminate binary under test
-# ssh $HOST -C "killall AM62L_benchmark_ui"
+ssh $HOST -C "killall AM62L_benchmark_ui"
 # wait
 ssh $HOST -C "sleep 10s"
 # terminate system-info-collector
@@ -51,8 +52,7 @@ ssh $HOST -C "killall system_info_collector"
 # ssh -t $HOST "for i in /sys/devices/system/cpu/cpu[2-3]*/online; do sudo echo 1 > "'$i'"; done" #TODO fix sudo
 ## get benchmark data
 mkdir data
-FILE_DATE_PREFIX=$(date +"%Y-%m-%d_%H%M") #TODO fix date
-scp -O $HOST:$REMOTE_TARGET_DIR/system_data.csv ./data/$FILE_DATE_PREFIX_$BACKEND.csv
-scp -O $HOST:$REMOTE_TARGET_DIR/system_data_plot.html ./data/$FILE_DATE_PREFIX_$BACKEND.html
+scp -O $HOST:$REMOTE_TARGET_DIR/system_data.csv ./data/"$ITERATION_PREFIX"_"$BACKEND".csv
+scp -O $HOST:$REMOTE_TARGET_DIR/system_data_plot.html ./data/"$ITERATION_PREFIX"_"$BACKEND".html
 ## open system-info-collector plot
-$BROWSER ./data/$FILE_DATE_PREFIX_$BACKEND.html
+$BROWSER ./data/"$ITERATION_PREFIX"_"$BACKEND".html
