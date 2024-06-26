@@ -16,12 +16,16 @@ with BeaglePlay boards.
 
 ## Usage
 
-1. run `cpu_cores_disable.sh`to disable 2 of the 4 CPU cores, e.g.
+1. run `bb_code_server_stop.sh`to disable bb-code-server-service, e.g.
+    ```
+    $ ./bb_code_server_stop.sh beagleplay
+    ```
+2. run `cpu_cores_disable.sh`to disable 2 of the 4 CPU cores, e.g.
     ```
     $ ./cpu_cores_disable.sh beagleplay
     ```
-2. run `build_deploy_and_run_benchmark_on_target.sh` to perform a benchmark, e.g.
+3. run `build_deploy_and_run_benchmark_on_target.sh` to perform a benchmark, e.g.
     ```
     $ ./build_deploy_and_run_benchmark_on_target.sh beagleplay winit-software
     ```
-3. wait for the benchmark plot to be opened in the browser on your host machine
+4. wait for the benchmark plot to be opened in the browser on your host machine
