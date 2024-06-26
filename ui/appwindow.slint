@@ -1,14 +1,30 @@
-import { ProgressIndicator } from "std-widgets.slint";
-
 export component AppWindow inherits Window {
+    in-out property <bool> move-rectangles: false;
+
     width: 1920px;
     height: 1080px;
 
-    ProgressIndicator {
-        width: 200px;
-        height: 20px;
+    Rectangle {
+        x: root.move-rectangles ? root.width - self.width : 0;
+        y: 0px;
+        width: 40px;
+        height: 40px;
+        background: blue;
+        animate x {
+            duration: 5000ms;
+            easing: linear;
+        }
+    }
 
-        progress: 0%;
-        indeterminate: true;
+    Rectangle {
+        x: root.move-rectangles ? 0 : root.width - self.width;
+        y: root.height - self.height;
+        width: 40px;
+        height: 40px;
+        background: blue;
+        animate x {
+            duration: 5000ms;
+            easing: linear;
+        }
     }
 }
