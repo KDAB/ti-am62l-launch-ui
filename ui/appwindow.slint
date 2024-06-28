@@ -1,54 +1,149 @@
+import { HwInfo, HwInfoPage } from "pages/hw_info_page.slint";
+import { CheckBox, VerticalBox, GridBox, HorizontalBox } from "std-widgets.slint";
+
+export { HwInfo }
+
 export component AppWindow inherits Window {
-    in-out property <bool> move-rectangles: false;
+    property <length> margin: 20px;
+    property <length> spacing: 20px;
 
     width: 1920px;
     height: 1080px;
 
-    Rectangle {
-        x: root.move-rectangles ? root.width - self.width : 0;
+    
+    header := HorizontalBox {
+        x: root.margin;
         y: 0px;
-        width: 270px;
-        height: 270px;
-        background: blue;
-        animate x {
-            duration: 5000ms;
-            easing: linear;
+
+        width: root.width - 2 * root.margin;
+        height: 100px;
+
+        alignment: space-between;
+        
+        Text {
+            font-size: 50px;
+            text: "Texas Instruments AM62L";
+            vertical-alignment: center;
+        }
+        
+        Image {
+            source: @image-url("resources/ti_logo.png");
         }
     }
 
     Rectangle {
-        x: root.move-rectangles ? 0 : root.width - self.width;
-        y: 270px;
-        width: 270px;
-        height: 270px;
-        background: blue;
-        animate x {
-            duration: 5000ms;
-            easing: linear;
-        }
+        x: root.margin;
+        y: header.y + header.height + root.margin;
+
+        width: 920px;
+        height: 430px;
+
+        visible: !check-box.checked;
+        // visible: hw-info.minimized;
+        background: gray;
     }
 
     Rectangle {
-        x: root.move-rectangles ? root.width - self.width : 0;
-        y: 540px;
-        width: 270px;
-        height: 270px;
-        background: blue;
-        animate x {
-            duration: 5000ms;
-            easing: linear;
-        }
+        x: root.width - root.margin - self.width;
+        y: header.y + header.height + root.margin;
+
+        width: 920px;
+        height: 430px;
+
+        visible: !check-box.checked;
+        // visible: hw-info.minimized;
+        background: gray;
     }
 
     Rectangle {
-        x: root.move-rectangles ? 0 : root.width - self.width;
-        y: 810px;
-        width: 270px;
-        height: 270px;
-        background: blue;
-        animate x {
-            duration: 5000ms;
-            easing: linear;
+        x: root.margin;
+        y: footer.y - self.height - root.margin;
+
+        width: 920px;
+        height: 430px;
+
+        visible: !check-box.checked;
+        // visible: hw-info.minimized;
+        background: gray;
+    }
+
+    hw-info := HwInfoPage {
+        property <bool> minimized: self.x == root.width - root.margin - self.width && self.y == footer.y - 430px - root.margin;
+        // width: 920px;
+        // height: 430px;
+
+        x: check-box.checked ? root.margin : root.width - root.margin - self.width;
+        y: check-box.checked ? header.y + header.height + root.margin : footer.y - 430px - root.margin;
+
+        width: check-box.checked ? 1600px : 920px;
+        height: check-box.checked ? 1800px : 430px;
+
+        animate x, y, width, height {
+                duration: 2s;
+                easing: linear;
         }
     }
+
+    footer := HorizontalBox {
+        x: root.margin;
+        y: root.height - self.height;
+
+        width: root.width - 2 * root.margin;
+        height: 50px;
+
+        alignment: space-between;
+        
+        check-box := CheckBox {}
+    }
+    
+    // }
+
+
+    // Rectangle {
+    //     x: root.move-rectangles ? root.width - self.width : 0;
+    //     y: 0px;
+    //     width: 270px;
+    //     height: 270px;
+    //     background: blue;
+    //     animate x {
+    //         duration: 5000ms;
+    //         easing: linear;
+    //     }
+    // }
+
+    // Rectangle {
+    //     x: root.move-rectangles ? 0 : root.width - self.width;
+    //     y: 270px;
+    //     width: 270px;
+    //     height: 270px;
+    //     background: blue;
+    //     animate x {
+    //         duration: 5000ms;
+    //         easing: linear;
+    //     }
+    // }
+
+    // Rectangle {
+    //     x: root.move-rectangles ? root.width - self.width : 0;
+    //     y: 540px;
+    //     width: 270px;
+    //     height: 270px;
+    //     background: blue;
+    //     animate x {
+    //         duration: 5000ms;
+    //         easing: linear;
+    //     }
+    // }
+
+    // Rectangle {
+    //     x: root.move-rectangles ? 0 : root.width - self.width;
+    //     y: 810px;
+    //     width: 270px;
+    //     height: 270px;
+    //     background: blue;
+    //     animate x {
+    //         duration: 5000ms;
+    //         easing: linear;
+    //     }
+    // }
 }

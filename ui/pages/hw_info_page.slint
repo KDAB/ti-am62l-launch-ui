@@ -1,0 +1,135 @@
+import { GridBox, ListView, ScrollView, VerticalBox, ProgressIndicator, GroupBox, TextEdit, HorizontalBox } from "std-widgets.slint";
+import { Label } from "../widgets/label.slint";
+import { HwInfoWidget } from "../widgets/hw_info_widget.slint";
+
+// import { GallerySettings } from "../gallery_settings.slint";
+
+export global HwInfo {
+    in-out property <int> cpu-freq-cpu-1;
+    in-out property <int> cpu-freq-cpu-2;
+    in-out property <int> cpu-load-total;
+    in-out property <int> cpu-load-cpu-1;
+    in-out property <int> cpu-load-cpu-2;
+    in-out property <int> ram-load;
+    in-out property <int> ram-used;
+    in-out property <string> sys-info;
+}
+
+export component HwInfoPage inherits VerticalBox {
+    GridBox {      
+        vertical-stretch: 0;
+        
+        Text {
+            col: 0;
+            row: 0;
+
+            font-size: 20px;
+            text: "Hardware Monitor";
+        }
+
+        GroupBox {
+            title: "CPU load [%]";
+            
+            col: 0;
+            row: 1;
+
+            VerticalBox {
+                HwInfoWidget {
+                    text: "Total";
+                    progress: HwInfo.cpu-load-total / 100;
+                    value: HwInfo.cpu-load-total;
+                }
+                HwInfoWidget {
+                    text: "CPU1";
+                    progress: HwInfo.cpu-load-cpu-1 / 100;
+                    value: HwInfo.cpu-load-cpu-1;
+                }
+                HwInfoWidget {
+                    text: "CPU2";
+                    progress: HwInfo.cpu-load-cpu-2 / 100;
+                    value: HwInfo.cpu-load-cpu-2;
+                }
+            }
+        }
+
+        GroupBox {
+            title: "CPU temperature [°C]";
+
+            col: 0;
+            row: 2;
+
+            VerticalBox {
+                HwInfoWidget {
+                    text: "CPU 1";
+                }
+                HwInfoWidget {
+                    text: "CPU 2";
+                }
+            }
+        }
+
+        GroupBox {
+            title: "CPU frequency [Hz]";
+            
+            col: 0;
+            row: 3;
+
+            VerticalBox {
+                HwInfoWidget {
+                    text: "CPU1";
+                    progress: HwInfo.cpu-freq-cpu-1 / 1400;
+                    value: HwInfo.cpu-freq-cpu-1;
+                }
+                HwInfoWidget {
+                    text: "CPU2";
+                    progress: HwInfo.cpu-freq-cpu-2 / 1400;
+                    value: HwInfo.cpu-freq-cpu-2;
+                }
+            }
+        }
+
+        GroupBox {
+            title: "Memory usage [MB]";
+
+            col: 0;
+            row: 4;
+
+            VerticalBox {
+                HwInfoWidget {
+                    text: "RAM Total";
+                    progress: HwInfo.ram-load;
+                    value: HwInfo.ram-used;
+                }
+            }
+
+            // TODO ?
+            // VerticalBox {
+            //     HwInfoWidget {
+            //         text: "Swap Total";
+            //         progress: HwInfo.ram-load;
+            //         value: HwInfo.ram-used;
+            //     }
+            // }
+        }
+
+
+
+        GroupBox {
+            title: "System Info";
+
+            col: 1;
+            row: 1;
+            rowspan: 4;
+
+            max-width: 640px;
+
+            TextEdit {
+                text: HwInfo.sys-info;
+            }
+        }
+    }
+
+    Rectangle {
+        vertical-stretch: 1;
+    }
+}
