@@ -1,0 +1,13 @@
+import { DemoMenuButton } from "demo_menu_button.slint";
+import { DemoLoader } from "../singletons/demo_loader.slint";
+
+export component DemoMenu inherits HorizontalLayout {
+    for demo[index] in DemoLoader.demo-data : DemoMenuButton {
+        selected: DemoLoader.selected-index == index;
+        text: demo.title;
+
+        clicked => {
+            DemoLoader.selected-index = index;
+        }
+    }
+}

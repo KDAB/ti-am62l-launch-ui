@@ -1,149 +1,99 @@
-import { HwInfo, HwInfoPage } from "pages/hw_info_page.slint";
-import { CheckBox, VerticalBox, GridBox, HorizontalBox } from "std-widgets.slint";
+import { CheckBox, VerticalBox, GridBox, HorizontalBox, TextEdit } from "std-widgets.slint";
 
-export { HwInfo }
+// Widgets
+import { DemoMenu } from "widgets/demo_menu.slint";
+import { DemoView } from "widgets/demo_view.slint";
+import { KdabDemoPage } from "pages/kdab_demo_page.slint";
+import { SystemResourcesTile } from "widgets/system_info_tile.slint";
+import { TextView } from "widgets/text_view.slint";
+
+// Singletons
+import { DemoInterface } from "singletons/demo_interface.slint";
+import { DemoLoader } from "singletons/demo_loader.slint";
+import { FontWeights } from "singletons/style.slint";
+
+// Exports
+export { DemoInterface }
 
 export component AppWindow inherits Window {
-    property <length> margin: 20px;
-    property <length> spacing: 20px;
+    property <length> border: 90px;
 
     width: 1920px;
     height: 1080px;
-
+    // no-frame: true;
     
-    header := HorizontalBox {
-        x: root.margin;
-        y: 0px;
+    background-image := Image {
+        property <length> content-rect-x: 670px;
+        property <length> content-rect-y: 242px;
+        property <length> content-rect-width: 1150px;
+        property <length> content-rect-height: 715px;
 
-        width: root.width - 2 * root.margin;
-        height: 100px;
-
-        alignment: space-between;
-        
-        Text {
-            font-size: 50px;
-            text: "Texas Instruments AM62L";
-            vertical-alignment: center;
-        }
-        
-        Image {
-            source: @image-url("resources/ti_logo.png");
-        }
-    }
-
-    Rectangle {
-        x: root.margin;
-        y: header.y + header.height + root.margin;
-
-        width: 920px;
-        height: 430px;
-
-        visible: !check-box.checked;
-        // visible: hw-info.minimized;
-        background: gray;
-    }
-
-    Rectangle {
-        x: root.width - root.margin - self.width;
-        y: header.y + header.height + root.margin;
-
-        width: 920px;
-        height: 430px;
-
-        visible: !check-box.checked;
-        // visible: hw-info.minimized;
-        background: gray;
-    }
-
-    Rectangle {
-        x: root.margin;
-        y: footer.y - self.height - root.margin;
-
-        width: 920px;
-        height: 430px;
-
-        visible: !check-box.checked;
-        // visible: hw-info.minimized;
-        background: gray;
-    }
-
-    hw-info := HwInfoPage {
-        property <bool> minimized: self.x == root.width - root.margin - self.width && self.y == footer.y - 430px - root.margin;
-        // width: 920px;
-        // height: 430px;
-
-        x: check-box.checked ? root.margin : root.width - root.margin - self.width;
-        y: check-box.checked ? header.y + header.height + root.margin : footer.y - 430px - root.margin;
-
-        width: check-box.checked ? 1600px : 920px;
-        height: check-box.checked ? 1800px : 430px;
-
-        animate x, y, width, height {
-                duration: 2s;
-                easing: linear;
-        }
-    }
-
-    footer := HorizontalBox {
-        x: root.margin;
-        y: root.height - self.height;
-
-        width: root.width - 2 * root.margin;
-        height: 50px;
-
-        alignment: space-between;
-        
-        check-box := CheckBox {}
+        source: @image-url("resources/background.png");
     }
     
-    // }
+    menu-bar := DemoMenu {
+        x: background-image.content-rect-x;
+        y: 155px;
+        
+        width: background-image.content-rect-width;
+        
+        alignment: LayoutAlignment.stretch;
+    }
+    
+    side-bar := GridLayout {
+        property <length> horizontal-margin: (system-resources-tile.width - demo-description.width) / 2;
 
+        x: root.border - horizontal-margin;
+        y: 200px;
+        
+        height: 813px;
+        
+        spacing: 20px;
+        
+        demo-title := Text {
+            col: 1;
+            row: 0;
+            
+            color: white;
+            font-weight: FontWeights.light;
+            font-size: 25px;
+            text: DemoLoader.demo-title;
+            
+            horizontal-alignment: TextHorizontalAlignment.left;
+            vertical-alignment: TextVerticalAlignment.center;
+        }
+        
+        demo-description := TextView {
+            col: 1;
+            row: 1;
 
-    // Rectangle {
-    //     x: root.move-rectangles ? root.width - self.width : 0;
-    //     y: 0px;
-    //     width: 270px;
-    //     height: 270px;
-    //     background: blue;
-    //     animate x {
-    //         duration: 5000ms;
-    //         easing: linear;
-    //     }
-    // }
+            width: 450px;
 
-    // Rectangle {
-    //     x: root.move-rectangles ? 0 : root.width - self.width;
-    //     y: 270px;
-    //     width: 270px;
-    //     height: 270px;
-    //     background: blue;
-    //     animate x {
-    //         duration: 5000ms;
-    //         easing: linear;
-    //     }
-    // }
+            text: DemoLoader.demo-description;
+            text-color: white;
+        }
 
-    // Rectangle {
-    //     x: root.move-rectangles ? root.width - self.width : 0;
-    //     y: 540px;
-    //     width: 270px;
-    //     height: 270px;
-    //     background: blue;
-    //     animate x {
-    //         duration: 5000ms;
-    //         easing: linear;
-    //     }
-    // }
+        system-resources-tile := SystemResourcesTile {
+            col: 0;
+            row: 2;
+            colspan: 3;
 
-    // Rectangle {
-    //     x: root.move-rectangles ? 0 : root.width - self.width;
-    //     y: 810px;
-    //     width: 270px;
-    //     height: 270px;
-    //     background: blue;
-    //     animate x {
-    //         duration: 5000ms;
-    //         easing: linear;
-    //     }
-    // }
+            width: 530px;
+
+            animate height {
+                duration: 400ms;
+                easing: ease-out-back;
+            }
+        }
+    }
+    
+    demo-view := DemoView {
+        x: background-image.content-rect-x;
+        y: background-image.content-rect-y;
+        
+        width: background-image.content-rect-width;
+        height: background-image.content-rect-height;
+
+        demo-index: DemoLoader.selected-index;
+    }
 }

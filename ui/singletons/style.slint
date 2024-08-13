@@ -1,0 +1,23 @@
+export global FontWeights {
+    // font weights in slint range from:
+    // - 100 lightest
+    // - 900 thickest
+    out property <int> lightest: 100;
+    out property <int> lighter: 200;
+    out property <int> light: 300;
+    out property <int> normal: 400;
+    out property <int> bold: 500;
+    out property <int> bolder: 600;
+    out property <int> thick: 700;
+    out property <int> thicker: 800;
+    out property <int> thickest: 900;
+}
+
+export global KDControlStyle {
+    out property <color> background-color: #404040;
+    out property <color> border-color: #3586f4;
+    // out property <length> border-radius: 10px;
+    out property <length> border-width: 4px;
+
+    in-out property <bool> dark-theme: true;
+}

@@ -1,0 +1,18 @@
+export component KDSwitch inherits Rectangle {
+    in-out property <bool> checked: false;
+    callback clicked <=> touch.clicked;
+
+    preferred-width: image.width;
+    preferred-height: image.height;
+
+    image := Image {
+        image-fit: ImageFit.contain;
+        source: root.checked ? @image-url("../resources/switch_checked.png") : @image-url("../resources/switch.png");
+    }
+    
+    touch := TouchArea {
+        clicked => {
+            root.checked = !root.checked;
+        }
+    }
+}

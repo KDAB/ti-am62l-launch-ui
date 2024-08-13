@@ -1,0 +1,13 @@
+export component KDButtonRound inherits Rectangle {
+    callback clicked <=> touch.clicked;
+
+    preferred-width: image.width;
+    preferred-height: image.height;
+
+    image := Image {
+        image-fit: ImageFit.contain;
+        source: @image-url("../resources/button_round.png");
+    }
+
+    touch := TouchArea {}
+}

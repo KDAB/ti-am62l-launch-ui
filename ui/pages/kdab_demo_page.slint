@@ -1,0 +1,41 @@
+import { GridBox } from "std-widgets.slint";
+import { KDControlStyle } from "../singletons/style.slint";
+import { KDButton } from "../widgets/kd_button.slint";
+import { KDSwitch } from "../widgets/kd_switch.slint";
+
+export component KdabDemoPage inherits Rectangle {
+    GridBox {
+        KDButton {
+            col: 0;
+            row: 0;
+
+            text0 := Text {
+                width: parent.width;
+
+                horizontal-alignment: TextHorizontalAlignment.center;
+                color: parent.dark-theme ? white : black;
+                text: "Button";
+            }
+        }
+
+        KDButton {
+            col: 0;
+            row: 1;
+
+            text1 := Text {
+                width: parent.width;
+
+                horizontal-alignment: TextHorizontalAlignment.center;
+                color: parent.dark-theme ? white : black;
+                text: "Button";
+            }
+        }
+
+        KDSwitch {
+            col: 1;
+            row: 0;
+
+            checked <=> KDControlStyle.dark-theme;
+        }
+    }
+}

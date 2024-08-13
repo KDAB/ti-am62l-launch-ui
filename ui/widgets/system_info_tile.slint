@@ -1,0 +1,112 @@
+import { KDButtonRound } from "kd_button_round.slint";
+import { SystemResourcesData, DemoInterface } from "../singletons/demo_interface.slint";
+
+export component SystemResourcesTile inherits Rectangle {    
+    in-out property <length> height-collapsed: 200px;
+    in-out property <length> height-expanded: 355px;
+    
+    out property <bool> is-collapsed: { self.height == height-collapsed };
+    out property <bool> is-expanded: { self.height == height-expanded };
+    
+    public function collapse() { self.height = self.height-collapsed; }
+    public function expand() { self.height = self.height-expanded; }
+
+    width: 530px;
+    height: self.height-collapsed;
+
+    background := Rectangle {
+        property <length> left-margin: 44px;
+        property <length> right-margin: 44px;
+        property <length> top-margin: 32px;
+        property <length> bottom-margin: 56px;
+
+        width: root.width;
+        height: root.height;
+
+        top := Image {
+            y: parent.y;
+            source: @image-url("../resources/info_tile_top.png");
+        }
+        mid := Image {
+            y: top.y + top.height;
+            width: root.width;
+            height: root.height - top.height - bottom.height;
+
+            image-fit: ImageFit.fill;
+            source: @image-url("../resources/info_tile_mid.png");
+        }
+        bottom := Image {
+            y: mid.y + mid.height;
+            
+            source: @image-url("../resources/info_tile_bottom.png");
+        }
+    }
+
+    VerticalLayout {
+        width: background.width - background.left-margin - background.right-margin;
+        height: background.height - background.top-margin - background.bottom-margin;
+
+        x: background.x + background.left-margin;
+        y: background.y + background.top-margin;
+
+        header := HorizontalLayout {
+            padding: 10px;
+
+            slint-logo := Image {
+                width: 56px;
+                height: self.width;
+                image-fit: ImageFit.contain;
+                source: @image-url("../resources/slint-logo-small-light.png");
+            }
+
+            title := Text {
+                text: "System Resources Usage";
+                vertical-alignment: TextVerticalAlignment.center;
+            }
+
+            button := KDButtonRound {
+                width: 56px;
+                height: self.width;
+
+                Rectangle {
+                    width: parent.width / 2;
+                    height: parent.height / 10;
+
+                    background: white;
+                }
+
+                Rectangle {
+                    width: parent.height / 10;
+                    height: parent.width / 2;
+
+                    background: white;
+                    visible: !is-expanded;
+                }
+
+                clicked => {
+                    is-collapsed ? expand() : collapse();
+                }
+            }
+        }
+
+        content := Rectangle {
+            width: parent.width;
+
+            padding-left: 20px;
+            
+            Text {
+                x: parent.padding-left;
+
+                text: "CPU usage (total): " + DemoInterface.system-resources-data.cpu-load-total + "% - RAM usage (total): " + DemoInterface.system-resources-data.ram-load + "%";
+                visible: root.is-collapsed;
+            }
+
+            Text {
+                x: parent.padding-left;
+
+                text: "PLACEHOLDER FOR FANCY WIDGETS";
+                visible: root.is-expanded;
+            }
+        }
+    }
+}

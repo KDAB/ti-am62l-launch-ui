@@ -1,0 +1,23 @@
+import { FontWeights } from "../singletons/style.slint";
+
+export component DemoMenuButton inherits Text {
+    in-out property <bool> selected: false;
+    callback clicked();
+
+    height: self.font-size;
+
+    color: white;
+    font-weight: self.selected ? FontWeights.normal : FontWeights.lightest;
+    font-size: 20px;
+    horizontal-alignment: TextHorizontalAlignment.center;
+    text: "DemoButton";
+    vertical-alignment: TextVerticalAlignment.center;
+
+    TouchArea {
+        width: parent.width;
+        height: parent.height;
+        clicked => {
+            parent.clicked();
+        }
+    }
+}

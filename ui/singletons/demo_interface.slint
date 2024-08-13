@@ -1,0 +1,8 @@
+export struct SystemResourcesData {
+    cpu-load-total: int,
+    ram-load: int
+}
+
+export global DemoInterface {
+    in-out property <SystemResourcesData> system-resources-data;
+}

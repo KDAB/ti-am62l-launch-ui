@@ -1,0 +1,9 @@
+import { DemoLoader } from "../singletons/demo_loader.slint";
+import { KdabDemoPage } from "../pages/kdab_demo_page.slint";
+
+export component DemoView inherits Rectangle {
+    in-out property <int> demo-index;
+
+    if (demo-index == 0) : kdab-demo-page := KdabDemoPage {}
+    if (demo-index == 1) : dummy-page := Rectangle {}
+}
