@@ -1,0 +1,85 @@
+import { Palette, Typography, BorderSpec, LayoutSpec, Icons, Images } from "./styling.slint";
+import { InlineButton } from "./inline-button.slint";
+
+export component Input {
+    // public properties
+    in-out property <string> text <=> text-input.text;
+    in property <bool> enabled <=> text-input.enabled;
+    
+    // private properties
+    width: max(236px, layout.min-width);
+    height: max(48px, layout.min-height);
+    forward-focus: text-input;
+
+    // child components
+    if text-input.has-focus && root.enabled: Image {
+        x: -8px;
+        y: -10px;
+        width: root.width + 16px;
+        height: root.height + 20px;
+        source: Images.button-shadow-selected;
+    }
+
+    border := Rectangle {
+        border-width: BorderSpec.default-width;
+        border-color: Palette.border;
+        border-radius: BorderSpec.input-border-radius;
+        background: Palette.background;
+    }
+
+    layout := HorizontalLayout {
+        padding-left: LayoutSpec.default-padding;
+        padding-right: LayoutSpec.default-padding;
+        spacing: LayoutSpec.default-spacing;
+
+        Rectangle {
+            clip: true;
+
+            text-input := TextInput {
+                property <length> computed-x;
+                property <length> margin: 2 * layout.padding;
+
+                x: min(0px, max(parent.width - self.width - self.text-cursor-width, self.computed-x));
+                width: max(parent.width - self.text-cursor-width, self.preferred-width);
+                color: Typography.default-color;
+                font-family: Typography.default-font-family;
+                vertical-alignment: center;
+                font-size: Typography.default-font-size;
+                selection-background-color: Palette.selection-background;
+                selection-foreground-color: Palette.selection-foreground;
+
+                cursor-position-changed(cursor-position) => {
+                    if cursor-position.x + self.computed_x < 2 * self.margin {
+                        self.computed_x = - cursor-position.x + self.margin;
+                    } else if cursor-position.x + self.computed_x > parent.width - self.margin - self.text-cursor-width {
+                        self.computed_x = parent.width - cursor-position.x - self.margin - self.text-cursor-width;
+                    }
+                }
+            }
+        }
+
+        if root.enabled: VerticalLayout {
+            alignment: center;
+
+            InlineButton {
+                icon: Icons.clear-icon;
+
+                clicked => {
+                    root.text = "";
+                }
+            }
+        }
+    }
+
+    // states
+    states [
+        disabled when !root.enabled: {
+            border.opacity: 0.5;
+            border.border-color: Palette.disabled-border;
+            text-input.opacity: 0.55;
+        }
+        focued when text-input.has-focus: {
+            border.border-color: Palette.selected-border;
+        }
+    ]
+}

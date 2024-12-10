@@ -1,0 +1,74 @@
+import { Palette, BorderSpec } from "./styling.slint";
+import { Images } from "styling.slint";
+
+export component Switch {
+    // public properties
+    in-out property <bool> checked;
+    in property <bool> enabled: true;
+
+    // private properties
+    property <easing> thumb-easing: cubic-bezier(0.61, 0.21, 0.68, 1.22);
+    property <duration> animation-duration: 200ms;
+    property <length> thumb-margin: 5px;
+
+
+    // property setters
+    width: 82px;
+    height: 48px;
+
+    // child components
+    stroke-and-fill := Rectangle {
+        border-radius: self.height / 2;
+        border-width: BorderSpec.default-width;
+        border-color: Palette.disabled-border;
+        background: Palette.unchecked-background;
+    }
+
+    touch-area := TouchArea {
+        enabled: root.enabled;
+        clicked => {
+            root.checked = !root.checked;
+        }
+    }
+
+    Image {
+        x: BorderSpec.default-width;
+        y: BorderSpec.default-width;
+        width: root.width - (BorderSpec.default-width * 2);
+        source: Images.inner-shadow;
+    }
+
+    thumb := Rectangle {
+        x: thumb-margin;
+        y: thumb-margin;
+        width: self.height;
+        height: root.height - (thumb-margin * 2);
+        border-width: BorderSpec.default-width;
+        border-color: Palette.disabled-border;
+        border-radius: self.height / 2;
+        background: Palette.unchecked-thumb;
+    }
+
+    // states
+    states [
+        checked when root.checked: {
+            thumb.x: root.width - thumb.width - thumb-margin;
+            thumb.background: Palette.checked-thumb;
+            thumb.border-color: Palette.border;
+            stroke-and-fill.background: Palette.checked-background;
+            stroke-and-fill.border-color: Palette.border;
+            in {
+                animate thumb.x, stroke-and-fill.background, stroke-and-fill.border-color {
+                    easing: thumb-easing;
+                    duration: animation-duration;
+                }
+            }
+            out {
+                animate thumb.x, stroke-and-fill.background, stroke-and-fill.border-color {
+                    easing: thumb-easing;
+                    duration: animation-duration;
+                }
+            }
+        }
+    ]
+}

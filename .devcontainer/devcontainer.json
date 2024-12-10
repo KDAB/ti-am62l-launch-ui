@@ -1,0 +1,76 @@
+// TODO -> tidy this up!
+{
+	"name": "TI AM62L Dockerfile",
+	"build": {
+		"context": "..",
+		"dockerfile": "../Dockerfile"
+	},
+
+	// Docker root-less Setup (use this in case your host runs root-less Docker)
+	// - changes container user from default user to root which maps to host user
+	// -> https://docs.docker.com/engine/security/rootless/#how-it-works
+	"containerUser": "root",
+
+	// X11 | Wayland Setup
+	// - mounts UDS directory to allow for running GUIs from inside the container
+	// - set environment variables non-statically (using `remoteEnv` instead of `containerEnv`)
+	// - allows for creation of sibling containers from within this container, e.g. for cross compilation
+	//   by mounting docker UDS directory and setting remoteEnv DOCKER_HOST
+
+	//// X11 (use this in case your host runs X11)
+	"mounts": [
+		"source=/tmp/.X11-unix/,target=/tmp/.X11-unix/,type=bind",
+		"source=/var/run/user/1000/docker.sock,target=/var/run/user/1000/docker.sock,type=bind"
+	],
+	"remoteEnv": {
+		"DISPLAY": "${localEnv:DISPLAY}",
+		"XDG_RUNTIME_DIR": "/run/user/${localEnv:UID}",
+		"DOCKER_HOST": "${localEnv:DOCKER_HOST}"
+	},
+
+	//// Wayland (use this in case your host runs Wayland)
+	// "mounts": [
+	// 	"source=${localEnv:XDG_RUNTIME_DIR}/${localEnv:WAYLAND_DISPLAY},target=/tmp/${localEnv:WAYLAND_DISPLAY},type=bind",
+	// 	"source=/var/run/user/1000/docker.sock,target=/var/run/user/1000/docker.sock,type=bind"
+	// ],
+	// "remoteEnv": {
+	// 	"QT_QPA_PLATFORM": "wayland",
+	// 	"WAYLAND_DISPLAY": "${localEnv:WAYLAND_DISPLAY}",
+	// 	"XDG_RUNTIME_DIR": "/tmp",
+	// 	"DOCKER_HOST": "${localEnv:DOCKER_HOST}"
+	// },
+	
+	// "features": {
+	// 	// allow for creation of sibling containers from within this container, e.g. for cross compilation
+	// 	"ghcr.io/devcontainers/features/docker-outside-of-docker:1": {
+	// 		"version": "latest",
+	// 		"moby": false
+	// 	}
+	// 	// "docker-from-docker": {
+	// 	// 	"version": "latest",
+	// 	// 	"moby": false
+	// 	// }
+	// },
+
+    // TODO -> ${localEnv:UID} or DOCKER_HOST
+	// "mounts": [ "source=/var/run/user/1000/docker.sock,target=/var/run/user/1000/docker.sock,type=bind" ],
+	// "mounts": [ "source=/tmp/.X11-unix/,target=/tmp/.X11-unix/,type=bind" ],
+
+	"workspaceMount": "source=${localWorkspaceFolder},target=${localWorkspaceFolder},type=bind",
+	"workspaceFolder": "${localWorkspaceFolder}",
+
+	// "remoteEnv": { "DOCKER_HOST": "${localEnv:DOCKER_HOST}" },
+
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"rust-lang.rust-analyzer",
+				"Slint.slint",
+				"vadimcn.vscode-lldb"
+			],
+			"settings": {
+				"extensions.ignoreRecommendations": true
+			}
+		}
+	}
+}

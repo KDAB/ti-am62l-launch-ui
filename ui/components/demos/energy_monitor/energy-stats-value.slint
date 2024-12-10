@@ -1,0 +1,51 @@
+import { Typography } from "styling.slint";
+import { Palette } from "styling.slint";
+export component EnergyStatsValue inherits Rectangle {
+    in-out property <string> designator <=> designator.text;
+    in-out property <string> value <=> value.text;
+
+    in-out property <length> designator-size <=> designator.font-size;
+    in-out property <length> value-size <=> value.font-size;
+
+    in-out property <length> horizontal-offset: 0px;
+
+    in-out property <brush> value-color <=> value.color;
+    // in-out property <bool> overwrite-value-color-by-sign;
+
+    property <length> padding-horizontal: 20px;
+    property <length> text-width: (self.width / 2) - padding-horizontal;
+
+    min-height: Math.max(designator.font-size, value.font-size);
+
+    // background: blue;
+    // opacity: 0.5;
+
+    designator := Text {
+        x: horizontal-offset;
+        y: (parent.height - self.height) / 2;
+        width: parent.text-width;
+
+        horizontal-alignment: TextHorizontalAlignment.right;
+        vertical-alignment: TextVerticalAlignment.center;
+        padding-right: padding-horizontal;
+        
+        font-family: Typography.font-family-light;
+        font-size: Typography.font-size-larger;
+    }
+
+    value := Text {
+        x: parent.width - self.width + horizontal-offset;
+        y: (parent.height - self.height) / 2;
+        width: parent.text-width;
+
+        horizontal-alignment: TextHorizontalAlignment.left;
+        vertical-alignment: TextVerticalAlignment.center;
+        padding-left: padding-horizontal;
+
+        color: Palette.text-blue;
+
+        font-family: Typography.default-font-family;
+        font-size: Typography.font-size-large;
+        font-weight: 900;
+    }
+}

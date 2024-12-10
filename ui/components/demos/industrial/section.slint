@@ -1,0 +1,46 @@
+import { Palette, Typography } from "styling.slint";
+
+export component Section inherits Rectangle {
+    in-out property <string> section-item-names <=> names.text;
+    in-out property <string> section-item-counts <=> counts.text;
+    in property <image> section-icon <=> icon.source;
+
+    width: 300px;
+    height: self.width;
+
+    border-color: Palette.border;
+    border-radius: self.width / 15;
+    border-width: 1px;
+    
+    icon := Image {}
+
+    names := Text {
+        x: parent.border-radius;
+        y: self.x;
+
+        width: parent.width - self.x * 2;
+        height: parent.height - self.y * 2;
+
+        horizontal-alignment: TextHorizontalAlignment.left;
+        vertical-alignment: TextVerticalAlignment.bottom;
+
+        color: Typography.default-color;
+        font-family: Typography.default-font-family;
+        font-size: Typography.font-size-small;
+    }
+
+    counts := Text {
+        x: parent.border-radius;
+        y: self.x;
+
+        width: parent.width - self.x * 2;
+        height: parent.height - self.y * 2;
+
+        horizontal-alignment: TextHorizontalAlignment.right;
+        vertical-alignment: TextVerticalAlignment.bottom;
+
+        color: Typography.default-color;
+        font-family: Typography.default-font-family;
+        font-size: Typography.font-size-small;
+    }
+}

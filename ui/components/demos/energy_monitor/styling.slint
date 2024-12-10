@@ -1,0 +1,68 @@
+import "../../../resources/fonts/OpenSans-LightItalic.ttf";
+import "../../../resources/fonts/OpenSans-Regular.ttf";
+import "../../../resources/fonts/OpenSans-Bold.ttf"; // this font is implicitly picked based on the font-weight property
+
+export global Palette {
+//     property <color> slint-blue: #3586f4;
+    out property <color> background: #ffffff;
+//     out property <color> foreground: #000000;
+    out property <color> border: #4f95f7ff;
+    // out property <color> text-black: #000000ff;
+    out property <color> text-blue: #0b5fd1ff;
+    out property <color> text-green: #1b8800;
+    out property <color> text-red: #ac0b00;
+//     out property <color> selected-border: #0084ff;
+//     out property <color> disabled-border: #8bb2e7;
+//     out property <color> selection-background: slint-blue;
+//     out property <color> selection-foreground: #ffffff;
+//     out property <brush> gradient: @linear-gradient(180deg, white 0%, #f4f9ff 80%, #f4f9ff 100%);
+//     out property <brush> popup-background: #f9fbff;
+//     out property <color> selected-backround: #f7f7f7;
+//     out property <color> item-selected-background: #cde1fd9e;
+
+//     out property <color> unchecked-background: #e5e5e5;
+//     out property <color> unchecked-thumb: #f5f9ff;
+//     out property <color> checked-background: #cde1fd;
+//     out property <color> checked-thumb: white;
+}
+
+export global Typography {
+    out property <string> default-font-family: font-family-regular;
+    out property <length> default-font-size: font-size-normal;
+    out property <color> default-color: #3d3d3d;
+
+    out property <string> font-family-light: "Open Sans Light";
+    out property <string> font-family-regular: "Open Sans";
+    // out property <string> font-family-bold: "Open Sans Bold";
+
+    out property <length> font-size-small: 15px;
+    out property <length> font-size-normal: 20px;
+    out property <length> font-size-large: 24px;
+    out property <length> font-size-larger: 42px;
+}
+
+// export global BorderSpec {
+//     out property <length> default-width: 2px;
+//     out property <length> input-border-radius: 18px;
+// }
+
+// export global LayoutSpec {
+//     out property <length> default-padding: 18px;
+//     out property <length> small-padding: 8px;
+//     out property <length> default-spacing: 8px;
+// }
+
+// export global Icons {
+//     out property <image> clear-icon: @image-url("../../assets/clear-icon.svg");
+//     out property <image> dropdown-open: @image-url("../../assets/dropdown-open.svg");
+//     out property <image> dropdown-closed: @image-url("../../assets/dropdown-closed.svg");
+// }
+
+export global Images {
+    out property <image> bar-graph: @image-url("../../../resources/energy_monitor__bar_graph.png");
+//     out property <image> button-shadow: @image-url("../../assets/shadow.png", nine-slice(25));
+//     out property <image> inner-shadow: @image-url("../../assets/inner.png", nine-slice(29 21 0 21));
+//     out property <image> button-shadow-selected: @image-url("../../assets/shadow-selected.png", nine-slice(30));
+//     out property <image> tick: @image-url("../../assets/tick.svg");
+//     out property <image> logo: @image-url("../../assets/slint-logo-small-light.png");
+}

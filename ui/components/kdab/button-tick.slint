@@ -1,0 +1,47 @@
+import { Images, Palette, Typography, BorderSpec } from "./styling.slint";
+import { SlintText } from "./slint-text.slint";
+import { ButtonBase } from "./button-base.slint";
+import { HorizontalBox } from "std-widgets.slint";
+
+export component ButtonTick inherits ButtonBase {
+    // public properties
+    in property label <=> label.text;
+
+    // private properties
+    property <length> tick-margin: 5px;
+
+    // property setters
+    height: 48px;
+    width: max(200px, tick.width + label.width + (root.border-radius * 2));
+
+    // child components
+    Rectangle {
+        x: 0;
+        y: 0;
+        width: root.width;
+        height: root.height;
+        tick := Rectangle {
+            x: tick-margin;
+            y: tick-margin;
+            width: self.height;
+            height: root.height - (tick-margin * 2);
+            border-width: BorderSpec.default-width;
+            border-color: Palette.border;
+            border-radius: self.height / 2;
+
+            Image {
+                width: 22px;
+                source: Images.tick;
+            }
+        }
+
+        Rectangle {
+            x: tick.x + tick.width + tick-margin;
+            width: root.width - self.x - root.border-radius;
+            height: root.height;
+            label := SlintText {
+                y: (root.height - self.height) / 2 - 1px;
+            }
+        }
+    }
+}

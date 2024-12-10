@@ -1,0 +1,17 @@
+import { Palette, Typography, BorderSpec } from "./styling.slint";
+import { SlintText } from "./slint-text.slint";
+import { ButtonBase } from "./button-base.slint";
+
+export component Button inherits ButtonBase {
+    // public properties
+    in property label <=> label.text;
+
+    // property setters
+    height: 48px;
+    width: max(200px, label.width + (root.border-radius * 2));
+
+    // child components
+    label := SlintText {
+        y: (root.height - self.height) / 2 - 1px;
+    }
+}

@@ -1,0 +1,39 @@
+import { Palette } from "styling.slint";
+import { Typography } from "styling.slint";
+
+export component EnergyStatsTile inherits Rectangle {
+    in-out property <string> title <=> title.text;
+
+    // background: green;
+    // opacity: 0.5;
+
+    // min-width: 50px;
+
+    title := Text {
+        x: 30px;
+        y: 0px;
+
+        font-family: Typography.default-font-family;
+        font-size: Typography.default-font-size;
+    }
+
+    horizontal-line := Rectangle {
+        x: 0px;
+        y: title.height;
+        height: 2px;
+
+        background: Palette.border;
+        border-color: Palette.border;
+    }
+
+    VerticalLayout {
+        x: 0px;
+        y: horizontal-line.y + horizontal-line.height;
+        height: parent.height - self.y;
+
+        alignment: center;
+        spacing: 20px;
+
+        @children
+    }
+}

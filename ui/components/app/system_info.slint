@@ -1,0 +1,10 @@
+import { Progress } from "progress.slint";
+
+export component SystemInfo inherits VerticalLayout {
+    in-out property <string> title <=> text.text;
+    in-out property <int> percent <=> indicator.value;
+
+    text := Text {}
+
+    indicator := Progress {}
+}

@@ -1,0 +1,263 @@
+import { Palette, BorderSpec, Typography, Icons, LayoutSpec, Images } from "./styling.slint";
+import { InlineButton } from "./inline-button.slint";
+import { NoClipScrollView } from "./scroll-view.slint";
+import { SlintText} from "./slint-text.slint";
+
+component DropItem {
+    in property <string> text;
+    in property <bool> selected;
+
+    callback clicked <=> touch-area.clicked;
+
+    height: 40px;
+
+    touch-area := TouchArea {
+       border := Rectangle {
+            x: 0;
+            width: root.width - LayoutSpec.default-padding;
+            border-bottom-right-radius: self.height / 2;
+            border-top-right-radius: self.border-bottom-right-radius;
+
+            HorizontalLayout {
+                padding-left: LayoutSpec.default-padding - 6px;
+                SlintText {
+                    text: root.text;
+                    vertical-alignment: center;
+                    overflow: elide;
+                }
+            }
+        }
+    }
+
+    states [
+        pressed when touch-area.pressed : {
+            border.background: Palette.selected-backround;
+        }
+        selected when root.selected : {
+            border.background: Palette.item-selected-background;
+        }
+    ]
+}
+
+component DropMenuBox {
+    in-out property <[StandardListViewItem]> model;
+    in-out property <int> current-item;
+    in property <bool> enabled <=> text-input.enabled;
+    in property <bool> editable;
+    in-out property <string> text <=> text-input.text;
+    in property <image> icon;
+    out property <StandardListViewItem> current-value: root.model[root.current-item];
+    in property <bool> outer-focus;
+
+    callback toggle-menu-open();
+    
+    forward-focus: text-input;
+    
+    // child components
+    if text-input.has-focus && root.enabled: Image {
+        x: -8px;
+        y: -10px;
+        width: root.width + 16px;
+        height: root.height + 20px;
+        source: Images.button-shadow-selected;
+    }
+
+    border := Rectangle {
+        border-width: BorderSpec.default-width;
+        border-color: Palette.border;
+        border-radius: self.height / 2;
+        background: Palette.gradient;
+
+        dropdown-border := Rectangle {
+            x: parent.width - self.width - parent.border-width;
+            width: 44px;
+            height: parent.height - 2 * parent.border-width;
+            background: Palette.background;
+            border-top-right-radius: parent.border-radius - 1px;
+            border-bottom-right-radius: self.border-top-right-radius;
+
+        
+            states [
+                pressed when touch-area.pressed : {
+                    dropdown-border.background: Palette.selected-backround;
+                }
+            ]
+        }
+    }
+
+    layout := HorizontalLayout {
+        padding-left: LayoutSpec.default-padding;
+        padding-right: LayoutSpec.default-padding;
+        padding-top: 4px;
+        padding-bottom: 4px;
+        spacing: LayoutSpec.default-spacing;
+    
+        Rectangle {
+            clip: true;
+
+            text-input := TextInput {
+                property <length> computed-x;
+                property <length> margin: 2 * layout.padding;
+
+                x: min(0px, max(parent.width - self.width - self.text-cursor-width, self.computed-x));
+                width: max(parent.width - self.text-cursor-width, self.preferred-width);
+                color: Typography.default-color;
+                font-family: Typography.default-font-family;
+                vertical-alignment: center;
+                font-size: Typography.default-font-size;
+                selection-background-color: Palette.selection-background;
+                selection-foreground-color: Palette.selection-foreground;
+                read-only: !root.editable;
+                text: root.current-value.text;
+
+                cursor-position-changed(cursor-position) => {
+                    if cursor-position.x + self.computed_x < 2 * self.margin {
+                        self.computed_x = - cursor-position.x + self.margin;
+                    } else if cursor-position.x + self.computed_x > parent.width - self.margin - self.text-cursor-width {
+                        self.computed_x = parent.width - cursor-position.x - self.margin - self.text-cursor-width;
+                    }
+                }
+
+                accepted => {
+                    root.model[root.current-item] = { text: self.text };
+                }
+            }
+        }
+
+        if root.enabled && root.editable: VerticalLayout {
+            alignment: center;
+
+            InlineButton {
+                icon: Icons.clear-icon;
+
+                clicked => {
+                    text-input.text = "";
+                }
+            }
+        }
+
+        Rectangle {
+            width: 2px;
+            background: Palette.border;
+        }
+
+        touch-area := TouchArea {
+            width: 22px;
+
+            Image {
+                width: 21px;
+                source: root.icon;
+                colorize: Palette.border;
+            }
+
+            clicked => {
+                text-input.clear-focus();
+                root.toggle-menu-open();
+            }
+        }
+    }
+
+    // states
+    states [
+        disabled when !root.enabled: {
+            border.opacity: 0.5;
+            border.border-color: Palette.disabled-border;
+            text-input.opacity: 0.55;
+        }
+        focued  when text-input.has-focus || root.outer-focus: {
+            border.border-color: Palette.selected-border;
+        }
+    ]
+}
+
+
+export component DropMenu {
+    // public properties
+    in-out property <[StandardListViewItem]> model <=> box.model;
+    in-out property <int> current-item <=> box.current-item;
+    in property <bool> editable <=> box.editable;
+    in property <bool> enabled <=> box.enabled;
+    out property <StandardListViewItem> current-value: box.current-value;
+
+    property <length> popup-menu-height: 250px;
+
+    width: max(236px, box.min-width);
+    height: max(48px, box.min-height);
+
+    changed model => {
+        box.text = current-value.text;
+    }
+
+    changed current-item => {
+        box.text = current-value.text;
+    }
+
+    box := DropMenuBox {
+        width: 100%;
+        height: 100%;
+        icon: Icons.dropdown-closed;
+
+        toggle-menu-open => {
+            popup.show();
+        }
+    }
+  
+    popup := PopupWindow {
+        width: root.width;
+        height: root.height + root.popup-menu-height;
+        // TODO -> close-policy: close-on-click-outside;
+
+        // popup menu
+        Rectangle {
+            x: 8px;
+            y: root.height / 2;
+            width: parent.width - 16px;
+            height: root.popup-menu-height;
+            border-radius: BorderSpec.input-border-radius;
+            clip: true;
+            background: Palette.background;
+           
+             NoClipScrollView {
+                x: 0;
+                y: root.height / 2;
+                width: parent.width - LayoutSpec.small-padding;
+                height: parent.height - root.height / 2;
+                
+                for item[index] in root.model : DropItem {
+                     text: item.text;
+                     selected: index == root.current-item;
+
+                     clicked => {
+                         root.current-item = index;
+                         popup.close();
+                     }
+                }
+             }
+
+             popup-border := Rectangle {
+                width: 100%;
+                height: 100%;
+                border-width: BorderSpec.default-width;
+                border-radius: BorderSpec.input-border-radius;
+                border-color: Palette.border;
+             }
+        }
+
+        // box
+        DropMenuBox {
+            x: 0;
+            y: 0;
+            width: root.width;
+            height: root.height;
+            icon: Icons.dropdown-open;
+            model: box.model;
+            current-item: box.current-item;
+            editable: box.editable;
+            text <=> box.text;
+
+            toggle-menu-open => {
+                popup.close();
+            }
+        }   
+     }
+ }

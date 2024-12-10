@@ -1,0 +1,68 @@
+import { GridBox } from "std-widgets.slint";
+import { ChargerInterface } from "../singletons/demo_interface.slint";
+
+export component ChargerDemoPage inherits Rectangle {
+    property <length> image-x: 700px;
+    property <length> image-y: 50px;
+
+    property <length> image-width: 380px;
+    property <length> image-height: 620px;
+
+    Image {
+        x: 50px;
+        y: 200px;
+
+        source: @image-url("../resources/sk_signet_quote.png");
+    }
+
+    Image {
+        x: image-x;
+        y: image-y;
+
+        width: image-width;
+        height: image-height;
+
+        source: @image-url("../resources/sk_signet_soc_000.png");
+        visible: ChargerInterface.cycle-counter == 0;
+    }
+    Image {
+        x: image-x;
+        y: image-y;
+
+        width: image-width;
+        height: image-height;
+        
+        source: @image-url("../resources/sk_signet_soc_025.png");
+        visible: ChargerInterface.cycle-counter == 1;
+    }
+    Image {
+        x: image-x;
+        y: image-y;
+
+        width: image-width;
+        height: image-height;
+        
+        source: @image-url("../resources/sk_signet_soc_050.png");
+        visible: ChargerInterface.cycle-counter == 2;
+    }
+    Image {
+        x: image-x;
+        y: image-y;
+
+        width: image-width;
+        height: image-height;
+        
+        source: @image-url("../resources/sk_signet_soc_075.png");
+        visible: ChargerInterface.cycle-counter == 3;
+    }
+    Image {
+        x: image-x;
+        y: image-y;
+
+        width: image-width;
+        height: image-height;
+        
+        source: @image-url("../resources/sk_signet_soc_100.png");
+        visible: ChargerInterface.cycle-counter == 4;
+    }
+}

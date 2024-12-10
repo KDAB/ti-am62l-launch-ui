@@ -1,0 +1,17 @@
+
+import { ButtonBase } from "./button-base.slint";
+
+export component IconButton inherits ButtonBase {
+    // public properties
+    in property icon-source <=> icon.source;
+
+    // property setters
+    height: 48px;
+    width: 48px;
+    border-radius: self.height * 0.4;
+
+    // child components
+    icon := Image {
+        height: root.height * 0.6;
+    }
+}

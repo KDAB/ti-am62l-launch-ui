@@ -1,0 +1,32 @@
+import { FontWeights } from "../singletons/style.slint";
+
+export component DemoButtonRound inherits Rectangle {
+    in property <image> background-image;
+    in-out property <string> text;
+    callback clicked <=> touch.clicked;
+
+    height: image.height;
+    width: image.width;
+
+    image := Image {
+        image-fit: ImageFit.contain;
+        source: root.background-image;
+    }
+
+    text := Text {
+        height: root.height;
+        width: root.width;
+
+        color: white;
+
+        font-weight: FontWeights.thick;
+        font-size: 20px;
+
+        horizontal-alignment: TextHorizontalAlignment.center;
+        vertical-alignment: TextVerticalAlignment.center;
+
+        text: root.text;
+    }
+
+    touch := TouchArea {}
+}

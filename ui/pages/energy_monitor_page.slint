@@ -1,0 +1,185 @@
+import { ScrollView } from "std-widgets.slint";
+import { EnergyStatsTile } from "../components/demos/energy_monitor/energy-stats-tile.slint";
+import { EnergyStatsValue } from "../components/demos/energy_monitor/energy-stats-value.slint";
+import { Images } from "../components/demos/energy_monitor/styling.slint";
+import { EnergyMenu } from "../components/demos/energy_monitor/energy-menu.slint";
+import { EnergyMenuPage } from "../components/demos/energy_monitor/energy-menu-page.slint";
+import { EnergyMonitorInterface } from "../singletons/demo_interface.slint";
+import { Typography } from "../components/demos/energy_monitor/styling.slint";
+
+export component EnergyMonitorPage inherits Rectangle {
+    padding-bottom: 40px;
+    
+    ScrollView {
+        viewport-width: self.width;// * 1.3;
+
+        GridLayout {
+            padding-top: 50px;
+            padding-bottom: 50px;
+            padding-left: 20px;
+            padding-right: 20px;
+
+            spacing: 20px;
+
+            daily-tile := EnergyStatsTile {
+                col: 0;
+                row: 0;
+                rowspan: 3;
+
+                title: @tr("Overview - 24h");
+
+                private property <length> horizontal-offset: -50px;
+
+                production-day := EnergyStatsValue {
+                    designator: @tr("Production");
+                    designator-size: Typography.font-size-large;
+                    value: EnergyMonitorInterface.production-today;
+                    value-size: Typography.font-size-larger;
+
+                    horizontal-offset: parent.horizontal-offset;
+                }
+
+                consumption-day := EnergyStatsValue {
+                    designator: @tr("Consumption");
+                    designator-size: Typography.font-size-large;
+                    value: EnergyMonitorInterface.consumption-today;
+                    value-size: Typography.font-size-larger;
+
+                    horizontal-offset: parent.horizontal-offset;
+                }
+
+                balance-day := EnergyStatsValue {
+                    designator: @tr("Balance");
+                    designator-size: Typography.font-size-large;
+                    value: EnergyMonitorInterface.balance-today;
+                    value-size: Typography.font-size-larger;
+
+                    horizontal-offset: parent.horizontal-offset;
+                }
+
+                image1 := Image {
+                    width: 100%;
+                    // height: 100%;
+
+                    // source: @image-url("../resources/demos/energy_monitor/energy_monitor.png");
+                    source: EnergyMonitorInterface.graph;
+                }
+            }
+
+            production-tile := EnergyStatsTile {
+                col: 1;
+                row: 0;
+
+                title: @tr("Production - History");
+
+                // production-current := EnergyStatsValue {
+                //     designator: @tr("Now");
+                //     value: EnergyMonitorInterface.production-current;
+                // }
+
+                production-week := EnergyStatsValue {
+                    designator: @tr("Week");
+                    value: EnergyMonitorInterface.production-week;
+                }
+
+                production-month := EnergyStatsValue {
+                    designator: @tr("Month");
+                    value: EnergyMonitorInterface.production-month;
+                }
+            }
+
+            consumption-tile := EnergyStatsTile {
+                col: 1;
+                row: 1;
+
+                title: @tr("Consumption - History");
+
+                // consumption-current := EnergyStatsValue {
+                //     designator: @tr("Now");
+                //     value: EnergyMonitorInterface.consumption-current;
+                // }
+
+                // consumption-day := EnergyStatsValue {
+                //     designator: @tr("Day");
+                //     value: EnergyMonitorInterface.consumption-today;
+                // }
+
+                consumption-week := EnergyStatsValue {
+                    designator: @tr("Week");
+                    value: EnergyMonitorInterface.consumption-week;
+                }
+
+                consumption-month := EnergyStatsValue {
+                    designator: @tr("Month");
+                    value: EnergyMonitorInterface.consumption-month;
+                }
+            }
+                
+            balance-tile := EnergyStatsTile {
+                col: 1;
+                row: 2;
+                
+                title: @tr("Balance - History");
+                
+                // balance-now := EnergyStatsValue {
+                //     designator: @tr("Now");
+                //     value: EnergyMonitorInterface.balance-current;
+                // }
+
+                // balance-today := EnergyStatsValue {
+                //     designator: @tr("Today");
+                //     value: EnergyMonitorInterface.balance-today;
+                // }
+    
+                balance-week := EnergyStatsValue {
+                    designator: @tr("Week");
+                    value: EnergyMonitorInterface.balance-week;
+                }
+
+                balance-month := EnergyStatsValue {
+                    designator: @tr("Month");
+                    value: EnergyMonitorInterface.balance-month;
+                }
+            }
+
+            // empty-tile := EnergyStatsTile {
+            //     col: 2;
+            //     row: 0;
+            //     colspan: 2;
+            //     rowspan: 3;
+
+            //     title: @tr("Empt");
+
+            //     image := Image {
+            //         width: 100%;
+            //         height: 100%;
+
+            //         source: EnergyMonitorInterface.graph;
+            //     }
+            // }
+        }
+    }
+
+    menu := EnergyMenu {
+        stays-open: true;
+        preferred-width: 100%;
+        preferred-height: 100%;
+        start-y: 35px;
+        end-y: root.height / 2;
+        menu-width: root.width;
+        menu-height: root.height / 2;
+
+        opend => {
+            // menu-page.current-index = 0;
+        }
+        
+        menu-page := EnergyMenuPage {
+            preferred-width: 100%;
+            preferred-height: 100%;
+            
+            close => {
+                menu.hide();
+            }
+        }
+    }
+}

@@ -1,0 +1,100 @@
+import { Palette, BorderSpec } from "./styling.slint";
+import { Images, Icons } from "styling.slint";
+
+enum RadioButtonMode {
+    check,
+    circle
+}
+export component RadioButton {
+    // public properties
+    in-out property <bool> checked;
+    in property <bool> enabled: true;
+    in property <RadioButtonMode> mode: RadioButtonMode.check;
+
+    // public callbacks
+    callback updated (bool);
+
+    // private properties
+    property <duration> animation-duration: 100ms;
+    property <color> thumb-border: Palette.disabled-border;
+    property <color> thumb-background: Palette.unchecked-thumb;
+
+    // property setters
+    width: 48px;
+    height: 48px;
+
+    // child components
+    stroke-and-fill := Rectangle {
+        border-radius: self.height / 2;
+        border-width: BorderSpec.default-width;
+        border-color: Palette.disabled-border;
+        background: Palette.unchecked-background;
+    }
+
+    touch-area := TouchArea {
+        enabled: root.enabled;
+        clicked => {
+            updated(!root.checked);
+        }
+    }
+
+    Image {
+        x: BorderSpec.default-width;
+        y: BorderSpec.default-width;
+        width: root.width - (BorderSpec.default-width * 2);
+        source: Images.inner-shadow;
+    }
+
+    if mode == RadioButtonMode.check: Rectangle {
+        width: 26px;
+        height: self.width;
+        border-width: BorderSpec.default-width;
+        border-color: thumb-border;
+        border-radius: 8px;
+        background: thumb-background;
+        Image {
+            visible: root.checked;
+            source: Icons.radio-x-icon;
+            width: 14px;
+            height: self.width;
+        }
+    }
+
+    if mode == RadioButtonMode.circle: Rectangle {
+        width: 30px;
+        height: self.width;
+        border-width: BorderSpec.default-width;
+        border-color: thumb-border;
+        border-radius: self.width / 2;
+        background: thumb-background;
+        Rectangle {
+            visible: root.checked;
+            width: 18px;
+            height: self.width;
+            border-width: BorderSpec.default-width;
+            border-color: thumb-border;
+            border-radius: self.width / 2;
+            background: stroke-and-fill.background;
+        }
+    }
+
+    // states
+    states [
+        checked when root.checked: {
+            thumb-background: Palette.checked-thumb;
+            thumb-border: Palette.border;
+            stroke-and-fill.background: Palette.checked-background;
+            stroke-and-fill.border-color: Palette.border;
+            in {
+                animate stroke-and-fill.background, stroke-and-fill.border-color { 
+                    duration: animation-duration; 
+                }
+            }
+            out {
+                animate stroke-and-fill.background, stroke-and-fill.border-color { 
+                    duration: animation-duration; 
+                }
+            }
+        }
+    ]
+}

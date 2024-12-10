@@ -4,16 +4,16 @@ import { CheckBox, VerticalBox, GridBox, HorizontalBox, TextEdit } from "std-wid
 import { DemoMenu } from "widgets/demo_menu.slint";
 import { DemoView } from "widgets/demo_view.slint";
 import { KdabDemoPage } from "pages/kdab_demo_page.slint";
-import { SystemResourcesTile } from "widgets/system_info_tile.slint";
+import { SystemResourcesTile } from "components/app/system_info_tile.slint";
 import { TextView } from "widgets/text_view.slint";
 
 // Singletons
-import { DemoInterface } from "singletons/demo_interface.slint";
+import { ChargerInterface, RoboInterface, EnergyMonitorInterface, IndustrialInterface, SystemResourcesData } from "singletons/demo_interface.slint";
 import { DemoLoader } from "singletons/demo_loader.slint";
 import { FontWeights } from "singletons/style.slint";
 
 // Exports
-export { DemoInterface }
+export { ChargerInterface, DemoLoader, EnergyMonitorInterface, RoboInterface, IndustrialInterface, SystemResourcesData }
 
 export component AppWindow inherits Window {
     property <length> border: 90px;
@@ -23,12 +23,13 @@ export component AppWindow inherits Window {
     // no-frame: true;
     
     background-image := Image {
-        property <length> content-rect-x: 670px;
+        property <length> content-rect-x: 669px;
         property <length> content-rect-y: 242px;
-        property <length> content-rect-width: 1150px;
+        property <length> content-rect-width: 1156px;
         property <length> content-rect-height: 715px;
 
         source: @image-url("resources/background.png");
+        // z: 10;
     }
     
     menu-bar := DemoMenu {
@@ -69,6 +70,7 @@ export component AppWindow inherits Window {
 
             width: 450px;
 
+            font-size: 16px;
             text: DemoLoader.demo-description;
             text-color: white;
         }
@@ -90,6 +92,7 @@ export component AppWindow inherits Window {
     demo-view := DemoView {
         x: background-image.content-rect-x;
         y: background-image.content-rect-y;
+        z: -1;
         
         width: background-image.content-rect-width;
         height: background-image.content-rect-height;

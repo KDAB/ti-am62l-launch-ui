@@ -1,0 +1,25 @@
+import { Palette, BorderSpec } from "./styling.slint";
+
+export component InlineButton {
+    in property <image> icon;
+
+    callback clicked <=> touch-area.clicked;
+
+    min-height: max(18px, image.min-height);
+    width: self.height;
+    
+    touch-area := TouchArea {
+        Rectangle {
+            border-color: Palette.border;
+            border-width:  BorderSpec.default-width / 2;
+            border-radius: max(self.width, self.height) / 2;
+
+            image := Image {
+                height: 8px;
+                width: self.height;
+                source: root.icon;
+                colorize: Palette.border;
+            }   
+        }
+    }
+}

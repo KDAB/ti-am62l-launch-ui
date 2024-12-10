@@ -1,0 +1,62 @@
+import { Images, Palette, Typography, BorderSpec } from "./styling.slint";
+
+export component ButtonBase {
+    // public properties
+    in property <bool> enabled: true;
+    in property <bool> selected: false;
+    in property <bool> pressed-override: false; // pressed-override only exists for demo purposes.
+    in property <length> border-radius: self.height / 2;
+
+    callback clicked <=> touch-area.clicked;
+
+    // property setters
+    height: 48px;
+
+    // child components
+    shadow := Image {
+        x: -4px;
+        y: -2px;
+        source: Images.button-shadow;
+        width: root.width + 8px;
+        height: root.height + 8.5px;
+    }
+
+    stroke-and-fill := Rectangle {
+        border-radius: root.border-radius;
+        border-width: BorderSpec.default-width;
+        border-color: Palette.border;
+        background: Palette.gradient;
+    }
+
+    contents := Rectangle {
+        @children
+    }
+
+
+    touch-area := TouchArea {
+        enabled: root.enabled;
+    }
+
+    // states
+    states [
+        disabled when !root.enabled : {
+            stroke-and-fill.opacity: 0.5;
+            stroke-and-fill.border-color: Palette.disabled-border;
+            contents.opacity: 0.55;
+            shadow.visible: false;
+        }
+        pressed when touch-area.pressed || root.pressed-override : {
+            stroke-and-fill.background: Palette.selected-backround;
+            shadow.opacity: 0.5;
+        }
+        selected when root.selected : {
+            stroke-and-fill.background: Palette.selected-backround;
+            stroke-and-fill.border-color: Palette.selected-border;
+            shadow.x: -8px;
+            shadow.y: -10px;
+            shadow.width: root.width + 16px;
+            shadow.height: root.height + 20px;
+            shadow.source: Images.button-shadow-selected;
+        }
+    ]
+}

@@ -1,0 +1,122 @@
+import { Palette, Typography, BorderSpec } from "./styling.slint";
+import { SlintText } from "slint-text.slint";
+import { Images } from "styling.slint";
+
+global Sizes {
+    out property <length> height: 48px;
+    out property <length> segmented-margin: height / 2;
+    out property <length> segment-width: 140px;
+}
+
+component Segment {
+    // public properties
+    in property <int> index;
+    in property <bool> selected;
+    in property <bool> enabled: true;
+    in property <string> label;
+
+    // public callbacks
+    callback updated(int);
+
+    // property setters
+    height: Sizes.height;
+    width: Sizes.segment-width;
+
+    // child components
+    stroke-and-fill := Rectangle {
+        border-color: Palette.border;
+        background: Palette.background;
+    }
+
+    touch-area := TouchArea {
+        enabled: root.enabled;
+        clicked => {
+            root.updated(root.index);
+        }
+    }
+
+    label := SlintText {
+        y: (root.height - self.height) / 2 - 1px;
+        text: root.label;
+        opacity: 0.74;
+    }
+
+    // states
+    states [
+        selected when root.selected: {
+            stroke-and-fill.background: Palette.gradient;
+            stroke-and-fill.border-color: Palette.selected-border;
+            label.opacity: 1;
+        }
+    ]
+}
+
+export component SegmentedButton {
+    // public properties
+    in property <bool> enabled: true;
+    in property <[string]> items: ["Button", "Segmented"];
+    in-out property <int> selected-index: 0;
+
+    // private properties
+    property <float> content-opacity: 1;
+    
+
+    // property setters
+    height: 48px;
+    width: (2 * Sizes.segmented-margin) + (items.length * Sizes.segment-width);
+
+    // child components
+    shadow := Image {
+        x: -4px;
+        y: -2px;
+        source: Images.button-shadow;
+        width: root.width + 8px;
+        height: root.height + 8.5px;
+    }
+
+    HorizontalLayout {
+        x: Sizes.segmented-margin;
+        y: 0;
+        for item[index] in items: Segment {
+            index: index;
+            label: item;
+            enabled: root.enabled;
+            selected: root.selected-index == index;
+            updated(index) => {
+                root.selected-index = index;
+            }
+        }
+    }
+
+    for i in items.length - 1: Rectangle {
+        x: Sizes.segmented-margin + Sizes.segment-width + (i * Sizes.segment-width);
+        width: 2px;
+        height: 40px;
+        background: Palette.border;
+        border-radius: self.width / 2;
+    }
+
+    Rectangle {
+        border-radius: self.height / 2;
+        clip: true;
+        leftMargin := Rectangle {
+            x: 0;
+            width: Sizes.segmented-margin;
+            height: root.height;
+            background: root.selected-index == 0 ? Palette.gradient : Palette.background;
+        }
+
+        rightMargin := Rectangle {
+            x: root.width - self.width;
+            width: Sizes.segmented-margin;
+            height: root.height;
+            background: root.selected-index == items.length - 1 ? Palette.gradient : Palette.background;
+        }
+    }
+
+    stroke-and-fill := Rectangle {
+        border-radius: self.height / 2;
+        border-width: BorderSpec.default-width;
+        border-color: Palette.border;
+    }
+}

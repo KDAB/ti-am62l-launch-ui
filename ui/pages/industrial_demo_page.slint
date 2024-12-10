@@ -1,0 +1,134 @@
+import { Button25D } from "../components/demos/industrial/button-25d.slint";
+import { IndustrialInterface } from "../singletons/demo_interface.slint";
+import { Images } from "../components/demos/industrial/styling.slint";
+import { Section } from "../components/demos/industrial/section.slint";
+
+export component IndustrialDemoPage inherits Rectangle {
+    // NOTE: For now I opted for not adding TouchAreas as
+    // child elements of the conveyor Images.
+    // Therefore conveyors are not clickable.
+    // A TouchArea as child of Image covers the whole
+    // content rectangle of the Image.
+    // IMO we would need to modify the conveyor image to
+    // be able to rotate the Image + TouchArea.
+
+    background-image := Image {
+        // TODO -> rename to margin
+        property <length> content-rect-x: 30px;
+        property <length> content-rect-y: 50px;
+
+        z: -2;
+
+        width: parent.width;
+        height: parent.height;
+
+        image-fit: ImageFit.fill;
+        source: @image-url("../resources/demos/industrial/background-side-section.png");
+    }
+
+    arrow-left := Image {
+        x: background-image.content-rect-x + 10px;
+        y: background-image.content-rect-y + 170px;
+
+        image-fit: ImageFit.preserve;
+        source: @image-url("../resources/demos/industrial/arrow-left.png");
+    }
+
+    button := Button25D {
+        x: arrow-left.x + 30px;
+        y: arrow-left.y + 50px;
+    }
+
+    conveyor-top := Image {
+        x: background-image.content-rect-x;
+        y: background-image.content-rect-y;
+
+        image-fit: ImageFit.preserve;
+        source: @image-url("../resources/demos/industrial/conveyor-s.png");
+    }
+    
+    conveyor-mid := Image {
+        x: conveyor-top.x + 105px;
+        y: conveyor-top.y + conveyor-top.height - 75px;
+        
+        image-fit: ImageFit.preserve;
+        source: @image-url("../resources/demos/industrial/conveyor-s-mirrored.png");
+    }
+
+    // section-number-1-small := Image {
+    //     x: conveyor-top.x + conveyor-top.width / 2 + 5px;
+    //     y: conveyor-top.y + 5px;
+
+    //     height: 150px;
+
+    //     source: @image-url("../resources/demos/industrial/number-1.png");
+    // }
+
+    // section-number-2-small := Image {
+    //     x: conveyor-mid.x + conveyor-mid.width / 2 + 50px;
+    //     y: conveyor-mid.y + conveyor-mid.height - self.height - 5px;
+
+    //     height: 150px;
+
+    //     source: @image-url("../resources/demos/industrial/number-2.png");
+    // }
+    
+    robo := Image {
+        x: conveyor-top.x + conveyor-top.width;
+        y: background-image.content-rect-y + 0px;
+        z: -1;
+
+        image-fit: ImageFit.preserve;
+        source: @image-url("../resources/demos/industrial/robo.png");
+    }
+
+    text := Image {
+        x: conveyor-mid.x - 25px;//background-image.content-rect-x + 550px;
+        y: conveyor-mid.y + conveyor-mid.height - self.height + 35px; //background-image.content-rect-y + 200px;
+
+        source: IndustrialInterface.text-image;
+    }
+
+    box := Image {
+        property <length> start-x: conveyor-top.x + 28px;
+        property <length> start-y: conveyor-top.y - 68px;
+        property <length> end-x: conveyor-top.x + conveyor-top.width;
+        property <length> end-y: conveyor-top.y + conveyor-top.height;
+
+        // x: start-x;
+        // y: start-y;
+
+        x: start-x + IndustrialInterface.box-x;
+        y: start-y + IndustrialInterface.box-y;
+
+        image-fit: ImageFit.preserve;
+        source: IndustrialInterface.box-image;
+        
+        // animate x {
+        //     duration: 10000ms;
+        // }
+        // animate y {
+        //     duration: 10000ms;
+        // }
+    }
+
+    package-section := VerticalLayout {
+        x: 810px;//parent.x + parent.width - self.width;
+        y: 0px;
+
+        alignment: space-around;
+        padding: 20px;
+
+        section-1 := Section {
+            section-icon: Images.section-icon-1;
+            section-item-names: @tr("Plastic Bag");
+            section-item-counts: @tr("100");
+        }
+
+        section-2 := Section {
+            section-icon: Images.section-icon-2;
+            section-item-names: @tr("Plastic Wrap\nBubbleWrap\nPackagingTape");
+            section-item-counts: @tr("1000\n423\n71");
+        }
+    }
+}

@@ -1,0 +1,46 @@
+{
+    "version": "2.0.0",
+    "options": {
+        "env": {
+            "SLINT_STYLE": "fluent"
+        }
+    },
+    "tasks": [
+        // cross compilations tasks
+        {
+            "label": "cross build: aarch64 release",
+            "type": "shell",
+            "command": "cross",
+            "args": [
+                "build",
+                "--target",
+                "aarch64-unknown-linux-gnu",
+                "--release",
+            ],
+            "problemMatcher": [],
+        },
+        {
+            "label": "cross test: aarch64",
+            "type": "shell",
+            "command": "cross",
+            "args": [
+                "test",
+                "--target",
+                "aarch64-unknown-linux-gnu",
+            ],
+            "problemMatcher": [],
+        },
+        // run tasks
+        {
+            "label": "cargo: run demo",
+            "type": "cargo",
+            "command": "run",
+            "args": [
+                "$env:test"
+            ],
+            "problemMatcher": [
+                "$rustc"
+            ],
+        },
+    ]
+}

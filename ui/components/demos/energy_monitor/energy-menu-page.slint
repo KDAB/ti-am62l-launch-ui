@@ -1,0 +1,312 @@
+import { Palette } from "styling.slint";
+import { Typography } from "styling.slint";
+import { Switch } from "../../kdab/switch.slint";
+import { RadioButton } from "../../kdab/radio-button.slint";
+
+// import { MenuOverviewAdapter } from "menu_overview.slint";
+// import { Settings, SettingsAdapter } from "settings.slint";
+// import { Theme } from "../../theme.slint";
+
+// export { MenuOverviewAdapter, SettingsAdapter }
+
+// export global MenuPageAdapter {
+//     in property <[StandardListViewItem]> model: [
+//         { text: "Production & Self-consumption"},
+//         { text: "Usage"},
+//         { text: "Balance"},
+//         { text: "Weather"},
+//     ];
+//     in-out property <int> selected-index;
+// }
+
+export component EnergyMenuPage inherits Rectangle {
+    // in-out property <int> current-index;
+
+    // callback page-changed(/* index */ int);
+    callback close;
+
+    property <int> radio-button-group-active-value: 2;
+
+    // private property <bool> show-settings;
+
+    // function back() {
+    //     current-index = 0;
+    // }
+
+    // Rectangle {
+    //     x: -parent.width * current-index;
+    //     width: 2 * parent.width;
+    //     clip: true;
+
+    //     animate x { duration: Theme.durations.fast; }
+
+    //     if(current-index == 0) : Settings {
+    //         close => {
+    //             root.close();
+    //         }
+
+    //         width: root.width;
+    //     }
+    // }
+
+
+
+    background: Palette.background;
+
+    title := Text {
+        x: 30px;
+        y: 0px;
+
+        font-family: Typography.default-font-family;
+        font-size: Typography.default-font-size;
+
+        // text: @tr("Settings");
+    }
+
+    horizontal-line := Rectangle {
+        x: 0px;
+        y: title.height;
+        height: 2px;
+
+        background: Palette.border;
+        border-color: Palette.border;
+    }
+
+
+    // Rectangle {
+    //     x: contents.x;
+    //     y: contents.y;
+
+    //     width: contents.width;
+    //     height: contents.height;
+
+    //     background: green;
+    //     opacity: 0.5;
+    // }
+
+    contents := GridLayout {
+        x: (parent.width - self.width) / 2;
+        y: horizontal-line.y + horizontal-line.height;
+        
+        width: parent.width * 0.6;
+        height: parent.height;
+
+        padding: 10px;
+        spacing: 20px;
+
+        Text {
+            col: 0;
+            colspan: 2;
+            row: 0;
+
+            height: self.font-size * 1.5; // TODO -> fix this hack
+
+            font-family: Typography.default-font-family;
+            font-size: Typography.default-font-size;
+            horizontal-alignment: TextHorizontalAlignment.center;
+
+            text: @tr("Option Area 1");
+        }
+
+        switch-1 := Switch {
+            col: 0;
+            row: 1;
+
+            checked: true;
+        }
+
+        Text {
+            col: 1;
+            row: 1;
+
+            font-family: Typography.default-font-family;
+            font-size: Typography.font-size-small;
+            vertical-alignment: TextVerticalAlignment.center;
+            
+            text: switch-1.checked ? @tr("ON") : @tr("OFF");
+        }
+
+        switch-2 := Switch {
+            col: 0;
+            row: 2;
+        }
+
+        Text {
+            col: 1;
+            row: 2;
+
+            font-family: Typography.default-font-family;
+            font-size: Typography.font-size-small;
+            vertical-alignment: TextVerticalAlignment.center;
+            
+            text: switch-2.checked ? @tr("ON") : @tr("OFF");
+        }
+
+        Text {
+            col: 2;
+            colspan: 2;
+            row: 0;
+
+            font-family: Typography.default-font-family;
+            font-size: Typography.default-font-size;
+            horizontal-alignment: TextHorizontalAlignment.center;
+
+            text: @tr("Option Area 2");
+        }
+
+        RadioButton {
+            col: 3;
+            row: 1;
+
+            updated(checked) => {
+                self.checked = !self.checked;
+            }
+        }
+
+        Text {
+            col: 2;
+            row: 1;
+
+            font-family: Typography.default-font-family;
+            font-size: Typography.font-size-small;
+            horizontal-alignment: TextHorizontalAlignment.right;
+            vertical-alignment: TextVerticalAlignment.center;
+            
+            text: @tr("CheckBox 1");
+        }
+
+        RadioButton {
+            col: 3;
+            row: 2;
+
+            checked: true;
+            updated(checked) => {
+                self.checked = !self.checked;
+            }
+        }
+
+        Text {
+            col: 2;
+            row: 2;
+
+            font-family: Typography.default-font-family;
+            font-size: Typography.font-size-small;
+            horizontal-alignment: TextHorizontalAlignment.right;
+            vertical-alignment: TextVerticalAlignment.center;
+            
+            text: @tr("CheckBox 2");
+        }
+
+        RadioButton {
+            col: 3;
+            row: 3;
+
+            checked: true;
+            updated(checked) => {
+                self.checked = !self.checked;
+            }
+        }
+
+        Text {
+            col: 2;
+            row: 3;
+
+            font-family: Typography.default-font-family;
+            font-size: Typography.font-size-small;
+            horizontal-alignment: TextHorizontalAlignment.right;
+            vertical-alignment: TextVerticalAlignment.center;
+            
+            text: @tr("CheckBox 3");
+        }
+
+        Text {
+            col: 4;
+            colspan: 2;
+            row: 0;
+
+            font-family: Typography.default-font-family;
+            font-size: Typography.default-font-size;
+            horizontal-alignment: TextHorizontalAlignment.center;
+
+            text: @tr("Option Area 3");
+        }
+
+        RadioButton {
+            col: 5;
+            row: 1;
+
+            mode: circle;
+            checked: radio-button-group-active-value == 0;
+
+            updated(checked) => {
+                if checked {
+                    radio-button-group-active-value = 0;
+                }
+            }
+        }
+
+        Text {
+            col: 4;
+            row: 1;
+
+            font-family: Typography.default-font-family;
+            font-size: Typography.font-size-small;
+            horizontal-alignment: TextHorizontalAlignment.right;
+            vertical-alignment: TextVerticalAlignment.center;
+            
+            text: @tr("RadioBox 1");
+        }
+
+        RadioButton {
+            col: 5;
+            row: 2;
+
+            mode: circle;
+            checked: radio-button-group-active-value == 1;
+
+            updated(checked) => {
+                if checked {
+                    radio-button-group-active-value = 1;
+                }
+            }
+        }
+
+        Text {
+            col: 4;
+            row: 2;
+
+            font-family: Typography.default-font-family;
+            font-size: Typography.font-size-small;
+            horizontal-alignment: TextHorizontalAlignment.right;
+            vertical-alignment: TextVerticalAlignment.center;
+            
+            text: @tr("RadioBox 2");
+        }
+
+        RadioButton {
+            col: 5;
+            row: 3;
+
+            mode: circle;
+            checked: radio-button-group-active-value == 2;
+
+            updated(checked) => {
+                if checked {
+                    radio-button-group-active-value = 2;
+                }
+            }
+        }
+
+        Text {
+            col: 4;
+            row: 3;
+
+            font-family: Typography.default-font-family;
+            font-size: Typography.font-size-small;
+            horizontal-alignment: TextHorizontalAlignment.right;
+            vertical-alignment: TextVerticalAlignment.center;
+            
+            text: @tr("RadioBox 3");
+        }
+    }
+ }

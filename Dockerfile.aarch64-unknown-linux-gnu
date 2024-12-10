@@ -1,4 +1,5 @@
-FROM ghcr.io/slint-ui/cross-aarch64-base:1.0
+FROM ghcr.io/slint-ui/slint/aarch64-unknown-linux-gnu:latest@sha256:6254286e7b567eec202369aa93059d1c297b7257cf5a7467afd767ae101c9e7e
+# FROM ghcr.io/slint-ui/cross-aarch64-base:1.0
 
 ARG CROSS_DEB_ARCH=arm64
 

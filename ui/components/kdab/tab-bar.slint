@@ -1,0 +1,94 @@
+import { BorderSpec, Palette } from "./styling.slint";
+import { SlintText } from "slint-text.slint";
+
+component Tab {
+    // public properties
+    in property <string> label;
+    in property <int> index;
+    in property <length> center-x;
+
+    // public callbacks
+    callback clicked(length);
+
+    // property setters
+    width: (40px * 2) + slint-text.width;
+    height: 20px;
+
+    // child components
+    slint-text := SlintText {
+        text: label;
+    }
+
+    TouchArea {
+        clicked => {
+            root.clicked(root.center-x);
+        }
+    }
+}
+
+export component TabBar {
+    // public properties
+    property <[string]> model: ["Tab1", "Tab2", "Extra long tab"];
+    property <length> tabsCenterX;
+
+    // private properties
+    property <length> totalWidth;
+
+    // property setters
+    width: 430px;
+    height: 2px;
+
+    // child components
+    VerticalLayout {
+        spacing: 10px;
+        HorizontalLayout {
+            for tab[index] in model: Tab {
+                index: index;
+                label: tab;
+
+                clicked(center-x) => {
+                    tabsCenterX = center-x;
+                }
+
+                init => {
+                    self.center-x = totalWidth + self.width / 2;
+                    totalWidth += self.width;
+
+                    if index == 0 {
+                        tabsCenterX = self.center-x;
+                    }
+                }
+            }
+        }
+
+        Rectangle {
+            width: 100%;
+            height: 2px;
+            background: #383838;
+            opacity: 0.28;
+        }
+    }
+
+    Rectangle {
+        y: 30px;
+        x: tabsCenterX;
+        width: 0px;
+        height: 0px;
+        Rectangle {
+            width: 73px;
+            height: 14px;
+            border-radius: self.height / 2;
+            background: Palette.background;
+            Rectangle {
+                width: 69px;
+                height: 10px;
+                border-color: Palette.border;
+                border-width: BorderSpec.default-width;
+                border-radius: self.height / 2;
+            }
+        }
+    }
+
+    // animations
+    animate tabsCenterX { duration: 100ms; }
+}

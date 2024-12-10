@@ -1,0 +1,94 @@
+// TODO -> swap button as soon as new button supports clicked()
+import { Button } from "std-widgets.slint";
+import { Button } from "../../kdab/button.slint";
+
+export component EnergyMenu {
+    in-out property <bool> menu-button-visible;
+    in property <length> start-y;
+    in property <length> end-y;
+    in property <bool> stays-open;
+    in property <length> menu-width <=> i-menu-container.width;
+    in property <length> menu-height <=> i-menu-container.height;
+    out property <bool> open;
+
+    callback opend();
+    callback closed();
+
+    public function hide-button() {
+        menu-button-visible = false;
+    }
+
+    public function open-menu() {
+        open = true;
+    }
+
+    public function hide() {
+        menu-button-visible = false;
+        open = false;
+        closed();
+    }
+
+    private property <int> container-visibility;
+
+    states [
+        open when root.open : {
+            container-visibility: 1.0;
+            i-menu-container.y: end-y;
+
+            // in {
+            //     animate i-menu-container.y { duration: 500ms; }//Theme.durations.medium; }
+            // }
+            // out {
+            //     animate container-visibility, i-menu-container.y { duration: 500ms; }//Theme.durations.medium; }
+            // }
+        }
+    ]
+
+    if (open) : Rectangle {
+        background: black;//Theme.palette.pure-black;
+        opacity: 0.5;
+
+        TouchArea {
+            clicked => {
+                hide();
+            }
+        }
+    }
+
+    i-menu-container := Rectangle {
+        x: (parent.width - self.width) / 2;
+        y: parent.height - start-y;
+        width: root.width / 3;
+        height: root.height - 75px;
+
+        i-container := Rectangle { //MenuBackground {
+            visible: container-visibility == 1.0;
+
+            // avoid click-through
+            TouchArea {}
+
+            @children
+        }
+
+        if(menu-button-visible || container-visibility == 1.0 || stays-open) : HorizontalLayout {
+            y:  -i-menu-button.height / 2;
+            alignment: center;
+
+            VerticalLayout {
+                alignment: start;
+
+                i-menu-button := Button {
+                    label: @tr("Settings");
+
+                    clicked => {
+                        if(open) {
+                            hide();
+                        } else {
+                            open-menu();
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

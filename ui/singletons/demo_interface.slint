@@ -1,8 +1,53 @@
-export struct SystemResourcesData {
-    cpu-load-total: int,
-    ram-load: int
+export enum ZoomFactor {
+    zoom-1x,
+    zoom-2x
 }
 
-export global DemoInterface {
-    in-out property <SystemResourcesData> system-resources-data;
+export global SystemResourcesData {
+    in property <int> cpu-load-total;
+    in property <int> ram-load;
+}
+
+export global ChargerInterface {
+    in property <int> cycle-counter;
+}
+
+export global EnergyMonitorInterface {
+    in property <string> balance-current;
+    in property <string> balance-today;
+    in property <string> balance-week;
+    in property <string> balance-month;
+
+    in property <string> consumption-current;
+    in property <string> consumption-today;
+    in property <string> consumption-week;
+    in property <string> consumption-month;
+
+    in property <string> production-current;
+    in property <string> production-today;
+    in property <string> production-week;
+    in property <string> production-month;
+
+    in property <string> usage-current;
+    in property <string> usage-week;
+
+    in property <image> graph;
+}
+
+export global RoboInterface {
+    in property <angle> robo-angle;
+    in property <length> robo-pos-x;
+    in property <length> robo-pos-y;
+    in property <image> robo-floor-image;
+    in property <ZoomFactor> robo-zoom-factor;
+
+    callback robo-zoom-factor-requested();
+}
+
+export global IndustrialInterface {
+    in property <image> box-image;
+    in property <image> text-image;
+
+    in property <length> box-x: 0px;
+    in property <length> box-y: 0px;
 }

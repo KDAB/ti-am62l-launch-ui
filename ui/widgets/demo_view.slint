@@ -1,9 +1,17 @@
 import { DemoLoader } from "../singletons/demo_loader.slint";
+
+import { ChargerDemoPage } from "../pages/charger_demo_page.slint";
+import { EnergyMonitorPage } from "../pages/energy_monitor_page.slint";
+import { IndustrialDemoPage } from "../pages/industrial_demo_page.slint";
 import { KdabDemoPage } from "../pages/kdab_demo_page.slint";
+import { RoboDemoPage } from "../pages/robo_demo_page.slint";
 
 export component DemoView inherits Rectangle {
-    in-out property <int> demo-index;
+    in property <int> demo-index;
 
     if (demo-index == 0) : kdab-demo-page := KdabDemoPage {}
-    if (demo-index == 1) : dummy-page := Rectangle {}
+    if (demo-index == 1) : robo-demo-page := RoboDemoPage {}
+    if (demo-index == 2) : industrial-demo-page := IndustrialDemoPage {}
+    if (demo-index == 3) : energy-monitor-page := EnergyMonitorPage {}
+    if (demo-index == 4) : charger-demo-page := ChargerDemoPage {}
 }

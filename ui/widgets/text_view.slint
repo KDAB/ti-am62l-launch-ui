@@ -1,5 +1,6 @@
 import { ScrollView } from "std-widgets.slint";
 export component TextView inherits ScrollView {
+    in-out property <length> font-size;
     in-out property <string> text;
     in-out property <brush> text-color;
 
@@ -10,6 +11,7 @@ export component TextView inherits ScrollView {
         width: root.viewport-width - 20px;
 
         color <=> root.text-color;
+        font-size: root.font-size;
         text <=> root.text;
         wrap: TextWrap.word-wrap;
     }

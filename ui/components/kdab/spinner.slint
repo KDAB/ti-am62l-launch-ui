@@ -1,0 +1,67 @@
+import { Palette } from "./styling.slint";
+
+export component Spinner {
+    in property <float> progress: 0.5;
+
+    width: 50px;
+    height: 50px;
+
+    track := Path {
+        property <float> radius: min(self.viewbox_width, self.viewbox_height) / 2;
+        property <float> start_x: self.viewbox_width / 2;
+        property <float> start_y: self.viewbox_height / 2;
+        property <float> inner_radius: self.radius - (4px * (self.viewbox_height / self.height));
+        property <float> start: 1 * mod(animation-tick(), 1.5s) / 1.5s;
+        property <float> progress: 0.5;
+
+        viewbox_width: 100;
+        viewbox_height: 100;
+        width: 100%;
+        height: 100%;
+        fill: Palette.border;
+        visible: self.progress > 0 && self.progress < 1;
+
+        MoveTo {
+            x: track.start_x - track.radius * sin(-track.start * 360deg);
+            y: track.start_y - track.radius * cos(-track.start * 360deg);
+        }
+
+        ArcTo {
+            radius_x: 1;
+            radius_y: 1;
+            x: track.start_x - track.inner-radius * sin(-track.start * 360deg);
+            y: track.start_y - track.inner_radius * cos(-track.start * 360deg);
+        }
+
+        ArcTo {
+            radius_x: track.inner_radius;
+            radius_y: track.inner_radius;
+            x: start_x - track.inner_radius * sin(-(track.start + track.progress) * 360deg);
+            y: start_y - track.inner_radius * cos(-(track.start + track.progress) * 360deg);
+            sweep: track.progress > 0;
+            large-arc: track.progress > 0.5;
+        }
+
+        ArcTo {
+            radius_x: 1;
+            radius_y: 1;
+            x: start_x - radius * sin(-(track.start + track.progress) * 360deg);
+            y: start_y - radius * cos(-(track.start + track.progress) * 360deg);
+        }
+
+        ArcTo {
+            radius_x: radius;
+            radius_y: radius;
+            x: start_x - radius * sin(-track.start * 360deg);
+            y: start_y - radius * cos(-track.start * 360deg);
+            sweep: track.progress < 0;
+            large-arc: track.progress > 0.5;
+        }
+
+        LineTo {
+            x: start_x - radius * sin(-track.start * 360deg);
+            y: start_y - radius * cos(-track.start * 360deg);
+        }
+
+    } 
+}

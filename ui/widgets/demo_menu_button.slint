@@ -4,7 +4,7 @@ export component DemoMenuButton inherits Text {
     in-out property <bool> selected: false;
     callback clicked();
 
-    height: self.font-size;
+    height: self.font-size * 1.5;
 
     color: white;
     font-weight: self.selected ? FontWeights.normal : FontWeights.lightest;

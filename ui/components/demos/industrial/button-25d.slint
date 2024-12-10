@@ -1,0 +1,81 @@
+export component Button25D inherits Rectangle {
+    in-out property <bool> checked: false;
+    callback clicked <=> touch.clicked;
+
+    width: 200px;
+    height: 175px;
+
+    top-reflection := Image {
+        y: 2 * bottom.y - top.y + 4px;
+
+        image-fit: ImageFit.preserve;
+        source: @image-url("./assets/button-top-reflection.png");
+    }
+
+    mid-reflection := Image {
+        y: 2 * bottom.y - mid.y + 4px;
+
+        image-fit: ImageFit.preserve;
+        source: @image-url("./assets/button-mid-reflection.png");
+    }
+
+    bottom := Image {
+        y: 60px;
+
+        image-fit: ImageFit.preserve;
+        source: @image-url("./assets/button-bottom.png");
+    }
+    
+    mid := Image {
+        y: -32px + bottom.y + (touch.pressed ? 20px : 0px);
+        
+        image-fit: ImageFit.preserve;
+        source: @image-url("./assets/button-mid.png");
+
+        animate y {
+            duration: 1660ms;
+            easing: ease-out-elastic;
+        }
+    }
+
+    top := Image {
+        y: -60px + bottom.y + (touch.pressed ? 34px : 0px);
+
+        image-fit: ImageFit.preserve;
+        source: @image-url("./assets/button-top.png");
+
+        animate y {
+            duration: 300ms;
+            easing: ease-out-back;
+        }
+
+        touch := TouchArea {
+            start-icon := Image {
+                x: 37px;
+                y: 26px;
+
+                image-fit: ImageFit.preserve;
+                opacity: checked ? 1 : 0;
+                source: @image-url("./assets/button-icon-start.png");
+            }
+            
+            stop-icon := Image {
+                x: 45px;
+                y: 27px;
+
+                image-fit: ImageFit.preserve;
+                opacity: 1 - start-icon.opacity;
+                source: @image-url("./assets/button-icon-stop.png");
+
+                animate opacity {
+                    duration: 300ms;
+                    easing: ease-in-out-quad;
+                }
+            }
+
+            clicked => {
+                checked = !checked;
+            }
+        }
+    }
+}

@@ -1,0 +1,135 @@
+import { RoboInterface, ZoomFactor } from "../singletons/demo_interface.slint";
+import { DemoButtonRound } from "../widgets/demo_button_round.slint";
+
+export component RoboDemoPage inherits Rectangle {
+    property <bool> demo-view-shows-robo-control: false;//overlay.width == 3261px && overlay.height == 2016px;
+
+    ui-mock := Image {
+        x: 210px;
+        y: 216px;
+
+        width: 178px;
+        height: 178px;
+        
+        source: @image-url("../resources/robo_control_ui_mock.png");
+    }
+
+    floorplan-background := Image {
+        x: 170px;
+        y: 100px;
+
+        source: @image-url("../resources/robo_control_background.png");
+
+        visible: demo-view-shows-robo-control;
+    }
+
+    path := Image {
+        x: 420px - 250px;
+        y: 350px - 250px;
+
+        rotation-angle: RoboInterface.robo-angle;
+        source: RoboInterface.robo-floor-image;
+        source-clip-width: 500;
+        source-clip-height: 500;
+        source-clip-x: RoboInterface.robo-pos-x / 1px - 250;
+        source-clip-y: RoboInterface.robo-pos-y / 1px - 250;
+
+        visible: demo-view-shows-robo-control;
+
+        animate rotation-angle {
+             duration: 500ms;
+            //  easing: ease-in-out-sine;
+        }
+    }
+
+    robo := Image {
+        x: 420px - self.width/2;
+        y: 350px - self.height/2;
+
+        source: @image-url("../resources/robo.png");
+
+        visible: demo-view-shows-robo-control;
+    }
+
+    floorplan := Image {
+        x: 420px - 250px;
+        y: 350px - 250px;
+
+        rotation-angle: RoboInterface.robo-angle;
+        source: RoboInterface.robo-zoom-factor == ZoomFactor.zoom-1x ? @image-url("../resources/floor_plan_1x.png") : @image-url("../resources/floor_plan_2x.png");
+        source-clip-width: 500;
+        source-clip-height: 500;
+        source-clip-x: RoboInterface.robo-pos-x / 1px - 250;
+        source-clip-y: RoboInterface.robo-pos-y / 1px - 250;
+
+        visible: demo-view-shows-robo-control;
+
+        animate rotation-angle {
+            duration: 500ms;
+            // easing: ease-in-out-sine;
+        }
+    }
+
+    overlay := Image {
+        x: 0px;
+        y: 0px;
+
+        // width: 1155px;
+        // height: 714px;
+
+        source: demo-view-shows-robo-control ? @image-url("../resources/robo_demo_page_control_background.png") : @image-url("../resources/robo_demo_page_wall_background.png"); //@image-url("../resources/robo_demo_page_wall_background_hiRes.png");
+
+        // animate height, width, x, y {
+        //      duration: 1000ms;
+        // }
+    }
+
+    zoom-factor-button := DemoButtonRound {
+        x: floorplan-background.x + floorplan-background.width/2 - self.width/2;
+        y: floorplan-background.y;
+
+        background-image: @image-url("../resources/robo_button_mint.png");
+        text: RoboInterface.robo-zoom-factor == ZoomFactor.zoom-1x ? "1x" : "2x";
+
+        visible: demo-view-shows-robo-control;
+
+        clicked => {
+            RoboInterface.robo-zoom-factor-requested();
+        }
+    }
+
+    clean-mode-button := DemoButtonRound {
+        x: floorplan-background.x;
+        y: floorplan-background.y + floorplan-background.height/2 - self.height/2;
+
+        background-image: @image-url("../resources/robo_button_pink.png");
+        text: "A";
+
+        visible: demo-view-shows-robo-control;
+    }
+
+    settings-button := DemoButtonRound {
+        x: floorplan-background.x + floorplan-background.width/2 - self.width/2;
+        y: floorplan-background.y + floorplan-background.height - self.height;
+
+        background-image: @image-url("../resources/robo_icon_gear.png");
+
+        visible: demo-view-shows-robo-control;
+    }
+
+    maximize-minimize-button := DemoButtonRound {
+        x: root.x + root.width - self.width - 20px;
+        y: root.y + 20px;
+
+        background-image: demo-view-shows-robo-control ? @image-url("../resources/robo_icon_minimize.png") : @image-url("../resources/robo_icon_maximize.png");
+
+        clicked => {
+            // overlay.x = -200px;
+            // overlay.y = -200px;
+
+            // overlay.width = 3261px * 0.4;
+            // overlay.height = 2016px * 0.4;
+            demo-view-shows-robo-control = !demo-view-shows-robo-control;
+        }
+    }
+}

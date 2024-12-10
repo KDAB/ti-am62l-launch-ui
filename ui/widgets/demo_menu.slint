@@ -7,7 +7,7 @@ export component DemoMenu inherits HorizontalLayout {
         text: demo.title;
 
         clicked => {
-            DemoLoader.selected-index = index;
+            DemoLoader.change-index(index);
         }
     }
 }
