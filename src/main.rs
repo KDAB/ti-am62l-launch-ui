@@ -30,8 +30,8 @@ fn main() -> Result<(), slint::PlatformError> {
     let industrial_assets = industrial::IndustrialDemoAssets::new();
     let industrial_backend = industrial::IndustrialDemoBackend::new(&ui, industrial_assets);
 
-    let robo_path_iter = robo::robo_path_iter();
-    let robo_backend = robo::RoboBackend::new(&ui, robo_path_iter);
+    // let robo_path_iter = robo::robo_path_iter();
+    let robo_backend = robo::RoboBackend::new(&ui);
 
     let demo_loader = ui.global::<DemoLoader>();
     demo_loader.on_index_changed({
@@ -48,7 +48,7 @@ fn main() -> Result<(), slint::PlatformError> {
             match demo_index {
                 1 => demo_update_timer.start(
                     slint::TimerMode::Repeated,
-                    std::time::Duration::from_millis(1000),
+                    std::time::Duration::from_millis(33),
                     {
                         let robo_backend = robo_backend.clone();
                         move || {

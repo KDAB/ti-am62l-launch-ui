@@ -3,6 +3,7 @@ import { DemoButtonRound } from "../widgets/demo_button_round.slint";
 
 export component RoboDemoPage inherits Rectangle {
     property <bool> demo-view-shows-robo-control: false;//overlay.width == 3261px && overlay.height == 2016px;
+    property <duration> animation-time: 1000ms;
 
     ui-mock := Image {
         x: 210px;
@@ -10,7 +11,7 @@ export component RoboDemoPage inherits Rectangle {
 
         width: 178px;
         height: 178px;
-        
+
         source: @image-url("../resources/robo_control_ui_mock.png");
     }
 
@@ -35,11 +36,6 @@ export component RoboDemoPage inherits Rectangle {
         source-clip-y: RoboInterface.robo-pos-y / 1px - 250;
 
         visible: demo-view-shows-robo-control;
-
-        animate rotation-angle {
-             duration: 500ms;
-            //  easing: ease-in-out-sine;
-        }
     }
 
     robo := Image {
@@ -63,11 +59,6 @@ export component RoboDemoPage inherits Rectangle {
         source-clip-y: RoboInterface.robo-pos-y / 1px - 250;
 
         visible: demo-view-shows-robo-control;
-
-        animate rotation-angle {
-            duration: 500ms;
-            // easing: ease-in-out-sine;
-        }
     }
 
     overlay := Image {
