@@ -1,4 +1,4 @@
-import { GroupBox } from "std-widgets.slint";
+import { GroupBox, VerticalBox, GridBox } from "std-widgets.slint";
 import { Button } from "../components/kdab/button.slint";
 import { IconButton } from "../components/kdab/icon-button.slint";
 import { Input } from "../components/kdab/input.slint";
@@ -15,283 +15,290 @@ import { TabBar } from "../components/kdab/tab-bar.slint";
 import { Slider } from "../components/kdab/slider.slint";
 import { Spinner } from "../components/kdab/spinner.slint";
 
-export component KdabDemoPage inherits Rectangle {
+export component KdabDemoPage inherits VerticalBox {
     property <string> icon-button-group-active-value: "1";
     property <string> radio-button-group-active-value: "1";
+    alignment: center;
 
-    VerticalLayout {
-        y: 50px;
-        width: parent.width * 0.7;
-        height: parent.height * 0.7;
+    HorizontalLayout {
+        alignment: center;
+        VerticalLayout {
+            width: parent.width * 0.7;
+            alignment: start;
+            spacing: 0px;
 
-        GroupBox {
-            title: @tr("Buttons");
-            GridLayout {
-                spacing: 20px;
-
-                Button {
-                    col: 0;
-                    row: 0;
-                    label: "Button";
-                }
-
-                ButtonTick {
-                    col: 1;
-                    row: 0;
-                    label: "Button";
-                }
-
-                SegmentedButton {
-                    col: 0;
-                    colspan: 2;
-                    row: 1;
-                }
-
-                HorizontalLayout {
-                    col: 2;
-                    row: 0;
-
-                    spacing: 20px;
-
-                    icon-button-1 := IconButton {
-                        icon-source: Images.logo;
-                        selected: false; // TODO -> icon-button-group-active-value == "1";
-                    }
-
-                    SlintText {
-                        vertical-alignment: center;
-                        text: "IconButton";
-                    }
-                }
-
-                HorizontalLayout {
-                    col: 2;
-                    row: 1;
-
-                    spacing: 20px;
-
-                    icon-button-2 := IconButton {
-                        icon-source: Images.logo;
-                        selected: true; // TODO -> icon-button-group-active-value == "2";
-                    }
-
-                    SlintText {
-                        vertical-alignment: center;
-                        text: "IconButton (selected)";
-                    }
-                }
-            }
-        }
-
-        GroupBox {
-            title: @tr("CheckBox - RadioButton - Switch");
-
-            GridLayout {
-                spacing: 10px;
-                HorizontalLayout {
-                    col: 0;
-                    row: 0;
-
-                    spacing: 20px;
-
-                    RadioButton {
-                        updated(checked) => {
-                            self.checked = !self.checked;
-                        }
-                    }
-
-                    SlintText {
-                        text: @tr("CheckBox 1");
-                        vertical-alignment: center;
-                    }
-                }
-
-                HorizontalLayout {
-                    col: 0;
-                    row: 1;
-
-                    spacing: 20px;
-
-                    RadioButton {
-                        checked: true;
-
-                        updated(checked) => {
-                            self.checked = !self.checked;
-                        }
-                    }
-
-                    SlintText {
-                        text: @tr("CheckBox 2");
-                        vertical-alignment: center;
-                    }
-                }
-
-                HorizontalLayout {
-                    col: 1;
-                    row: 0;
-
-                    spacing: 20px;
-
-                    RadioButton {
-                        mode: circle;
-                        checked: radio-button-group-active-value == "1";
-
-                        updated(checked) => {
-                            if checked {
-                                radio-button-group-active-value = "1";
-                            }
-                        }
-                    }
-
-                    SlintText {
-                        text: @tr("RadioButton 1");
-                        vertical-alignment: center;
-                    }
-                }
-
-                HorizontalLayout {
-                    col: 1;
-                    row: 1;
-
-                    spacing: 20px;
-
-                    RadioButton {
-                        mode: circle;
-                        checked: radio-button-group-active-value == "2";
-
-                        updated(checked) => {
-                            if checked {
-                                radio-button-group-active-value = "2";
-                            }
-                        }
-                    }
-
-                    SlintText {
-                        text: @tr("RadioButton 2");
-                        vertical-alignment: center;
-                    }
-                }
-
-                HorizontalLayout {
-                    col: 1;
-                    row: 2;
-
-                    spacing: 20px;
-
-                    RadioButton {
-                        mode: circle;
-                        checked: radio-button-group-active-value == "3";
-
-                        updated(checked) => {
-                            if checked {
-                                radio-button-group-active-value = "3";
-                            }
-                        }
-                    }
-
-                    SlintText {
-                        text: @tr("RadioButton 3");
-                        vertical-alignment: center;
-                    }
-                }
-
-                HorizontalLayout {
-                    col: 2;
-                    row: 0;
-
-                    spacing: 20px;
-
-                    switch-1 := Switch {
-                        checked: true;
-                    }
-
-                    SlintText {
-                        width: 50px;
-                        text: switch-1.checked ? "On" : "Off";
-                        vertical-alignment: center;
-                    }
-                }
-
-                HorizontalLayout {
-                    col: 2;
-                    row: 1;
-
-                    spacing: 20px;
-
-                    switch-2 := Switch { }
-
-                    SlintText {
-                        width: 50px;
-                        text: switch-2.checked ? "On" : "Off";
-                        vertical-alignment: center;
-                    }
-                }
-            }
-        }
-
-        HorizontalLayout {
-            spacing: 20px;
             GroupBox {
-                title: @tr("LineEdit");
-                Input {
-                    text: "Input";
+                title: @tr("Buttons");
+                GridLayout {
+                    spacing: 20px;
+
+                    Button {
+                        col: 0;
+                        row: 0;
+                        label: "Button";
+                    }
+
+                    ButtonTick {
+                        col: 1;
+                        row: 0;
+                        label: "Button";
+                    }
+
+                    SegmentedButton {
+                        col: 0;
+                        colspan: 2;
+                        row: 1;
+                    }
+
+                    HorizontalLayout {
+                        col: 2;
+                        row: 0;
+
+                        spacing: 20px;
+
+                        icon-button-1 := IconButton {
+                            icon-source: Images.logo;
+                            selected: false; // TODO -> icon-button-group-active-value == "1";
+                        }
+
+                        SlintText {
+                            vertical-alignment: center;
+                            text: "IconButton";
+                        }
+                    }
+
+                    HorizontalLayout {
+                        col: 2;
+                        row: 1;
+
+                        spacing: 20px;
+
+                        icon-button-2 := IconButton {
+                            icon-source: Images.logo;
+                            selected: true; // TODO -> icon-button-group-active-value == "2";
+                        }
+
+                        SlintText {
+                            vertical-alignment: center;
+                            text: "IconButton (selected)";
+                        }
+                    }
                 }
             }
 
             GroupBox {
-                title: @tr("DropMenu");
-                HorizontalLayout {
-                    spacing: 20px;
+                title: @tr("CheckBox - RadioButton - Switch");
 
-                    DropMenu {
-                        model: [
-                            { text: "Item 1" },
-                            { text: "Item 2" },
-                            { text: "Item 3" },
-                            { text: "Item 4" },
-                            { text: "Item 5" },
-                            { text: "Item 6" },
-                        ];
+                GridLayout {
+                    spacing: 10px;
+                    HorizontalLayout {
+                        col: 0;
+                        row: 0;
+
+                        spacing: 20px;
+
+                        RadioButton {
+                            updated(checked) => {
+                                self.checked = !self.checked;
+                            }
+                        }
+
+                        SlintText {
+                            text: @tr("CheckBox 1");
+                            vertical-alignment: center;
+                        }
                     }
 
-                    DropMenu {
-                        editable: true;
-                        model: [
-                            { text: "Item 1" },
-                            { text: "Item 2" },
-                            { text: "Item 3" },
-                            { text: "Item 4" },
-                            { text: "Item 5" },
-                            { text: "Item 6" },
-                        ];
+                    HorizontalLayout {
+                        col: 0;
+                        row: 1;
+
+                        spacing: 20px;
+
+                        RadioButton {
+                            checked: true;
+
+                            updated(checked) => {
+                                self.checked = !self.checked;
+                            }
+                        }
+
+                        SlintText {
+                            text: @tr("CheckBox 2");
+                            vertical-alignment: center;
+                        }
+                    }
+
+                    HorizontalLayout {
+                        col: 1;
+                        row: 0;
+
+                        spacing: 20px;
+
+                        RadioButton {
+                            mode: circle;
+                            checked: radio-button-group-active-value == "1";
+
+                            updated(checked) => {
+                                if checked {
+                                    radio-button-group-active-value = "1";
+                                }
+                            }
+                        }
+
+                        SlintText {
+                            text: @tr("RadioButton 1");
+                            vertical-alignment: center;
+                        }
+                    }
+
+                    HorizontalLayout {
+                        col: 1;
+                        row: 1;
+
+                        spacing: 20px;
+
+                        RadioButton {
+                            mode: circle;
+                            checked: radio-button-group-active-value == "2";
+
+                            updated(checked) => {
+                                if checked {
+                                    radio-button-group-active-value = "2";
+                                }
+                            }
+                        }
+
+                        SlintText {
+                            text: @tr("RadioButton 2");
+                            vertical-alignment: center;
+                        }
+                    }
+
+                    HorizontalLayout {
+                        col: 1;
+                        row: 2;
+
+                        spacing: 20px;
+
+                        RadioButton {
+                            mode: circle;
+                            checked: radio-button-group-active-value == "3";
+
+                            updated(checked) => {
+                                if checked {
+                                    radio-button-group-active-value = "3";
+                                }
+                            }
+                        }
+
+                        SlintText {
+                            text: @tr("RadioButton 3");
+                            vertical-alignment: center;
+                        }
+                    }
+
+                    HorizontalLayout {
+                        col: 2;
+                        row: 0;
+
+                        spacing: 20px;
+
+                        switch-1 := Switch {
+                            checked: true;
+                        }
+
+                        SlintText {
+                            width: 50px;
+                            text: switch-1.checked ? "On" : "Off";
+                            vertical-alignment: center;
+                        }
+                    }
+
+                    HorizontalLayout {
+                        col: 2;
+                        row: 1;
+
+                        spacing: 20px;
+
+                        switch-2 := Switch { }
+
+                        SlintText {
+                            width: 50px;
+                            text: switch-2.checked ? "On" : "Off";
+                            vertical-alignment: center;
+                        }
                     }
                 }
             }
-        }
 
-        GroupBox {
-            title: @tr("Slider - Spinner");
             HorizontalLayout {
                 spacing: 20px;
-                VerticalLayout {
-                    padding-top: 10px;
+                alignment: space-between;
 
-                    Slider {
-                        value: 25;
+                GroupBox {
+                    title: @tr("LineEdit");
+                    Input {
+                        text: "Input";
                     }
                 }
 
-                // Spinner {}
+                GroupBox {
+                    title: @tr("DropMenu");
+                    HorizontalLayout {
+                        spacing: 20px;
+                        horizontal-stretch: 100;
+
+                        DropMenu {
+                            model: [
+                                { text: "Item 1" },
+                                { text: "Item 2" },
+                                { text: "Item 3" },
+                                { text: "Item 4" },
+                                { text: "Item 5" },
+                                { text: "Item 6" },
+                            ];
+                        }
+
+                        DropMenu {
+                            editable: true;
+                            model: [
+                                { text: "Item 1" },
+                                { text: "Item 2" },
+                                { text: "Item 3" },
+                                { text: "Item 4" },
+                                { text: "Item 5" },
+                                { text: "Item 6" },
+                            ];
+                        }
+                    }
+                }
             }
-        }
 
-        GroupBox {
-            title: @tr("TabWidget");
-            TabBar { }
-        }
+            GroupBox {
+                title: @tr("Slider - Spinner");
+                HorizontalLayout {
+                    spacing: 20px;
+                    VerticalLayout {
+                        padding-top: 10px;
 
-        Rectangle {
-            vertical-stretch: 200;
+                        Slider {
+                            value: 25;
+                        }
+                    }
+
+                    // Spinner {}
+                }
+            }
+
+            GroupBox {
+                title: @tr("TabWidget");
+                TabBar { }
+            }
+
+            Rectangle {
+                vertical-stretch: 200;
+            }
         }
     }
 }
