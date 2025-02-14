@@ -7,6 +7,7 @@ use slint::{ComponentHandle};
 
 const FLOOR_PLAN_IMAGE_HEIGHT: u32 = 1040;
 const FLOOR_PLAN_IMAGE_WIDTH: u32 = 1180;
+const FLOOR_CIRCLE_RADIUS:u32 = 10;
 
 pub const AGNLE_STEP: f64 = 1.8;
 pub const NUMBER_OF_STEPS: usize = 3700;
@@ -67,6 +68,7 @@ struct FloorImage {
     height: u32,
     pixel_buffer: slint::SharedPixelBuffer<slint::Rgba8Pixel>,
     scale_factor: f32,
+    circle_radius: i32,
 }
 
 pub struct RoboBackend {
@@ -98,11 +100,13 @@ impl RoboBackend {
 
         let width = (FLOOR_PLAN_IMAGE_WIDTH as f32 * scale_factor) as u32;
         let height = (FLOOR_PLAN_IMAGE_HEIGHT as f32 * scale_factor) as u32;
+        let circle_radius = (FLOOR_CIRCLE_RADIUS as f32 * scale_factor) as i32;
         FloorImage {
             width,
             height,
             pixel_buffer: slint::SharedPixelBuffer::<slint::Rgba8Pixel>::new(width, height),
             scale_factor,
+            circle_radius,
         }
     }
 
@@ -233,7 +237,7 @@ impl RoboBackend {
             imageproc::drawing::draw_filled_circle_mut(
                 &mut image_buffer_as_image,
                 (x, y),
-                10,
+                self.floor_image.circle_radius,
                 image::Rgba([255, 255, 255, 255]),
             );
         }
