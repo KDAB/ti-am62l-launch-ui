@@ -2,7 +2,8 @@ use super::{AppWindow, IndustrialInterface};
 use image::{imageops, EncodableLayout, ImageBuffer, Rgba};
 use slint::ComponentHandle;
 
-pub struct IndustrialDemoAssets { // TODO -> rename to img buffer ...
+pub struct IndustrialDemoAssets {
+    // TODO -> rename to img buffer ...
     // text_font: rusttype::Font, // TODO -> check with Leon
     image_box_background: ImageBuffer<Rgba<u8>, Vec<u8>>,
     image_box_fill: ImageBuffer<Rgba<u8>, Vec<u8>>,
@@ -54,8 +55,8 @@ impl IndustrialDemoBackend {
         let this = std::rc::Rc::new(std::cell::RefCell::new(Self {
             assets: assets,
             animation_counter: -1,
-            animation_progress_permill: 401,
-            image_buffer: image::ImageBuffer::new(159,174),
+            animation_progress_permill: 751,
+            image_buffer: image::ImageBuffer::new(159, 174),
             ui_handle: ui.as_weak(),
         }));
 
@@ -63,7 +64,12 @@ impl IndustrialDemoBackend {
     }
 
     pub fn task(&mut self) {
-        let box_position_delta = self.animation_progress_permill as f32;
+        let ui = self.ui_handle.unwrap();
+        let industrial_demo_inteface = ui.global::<IndustrialInterface>();
+
+        if !industrial_demo_inteface.get_running() {
+            return;
+        }
 
         if self.animation_progress_permill <= 200 {
             let alpha_factor_percent = self.animation_progress_permill as f32 / 200 as f32;
@@ -88,14 +94,24 @@ impl IndustrialDemoBackend {
         let pixel_buffer =
             slint::SharedPixelBuffer::clone_from_slice(self.image_buffer.as_raw(), 159, 174);
         let image = slint::Image::from_rgba8(pixel_buffer);
-        
-        let ui = self.ui_handle.unwrap();
-        let industrial_demo_inteface = ui.global::<IndustrialInterface>();
+
         industrial_demo_inteface.set_box_image(image);
-        industrial_demo_inteface.set_box_x(box_position_delta);
-        industrial_demo_inteface.set_box_y(box_position_delta / 1.7);
+
+        let box_position_delta = self.animation_progress_permill as f32;
 
         if self.animation_progress_permill < 400 {
+            industrial_demo_inteface.set_box_x(box_position_delta);
+            industrial_demo_inteface.set_box_y(box_position_delta / 1.7);
+        } else if self.animation_progress_permill < 450 {
+            industrial_demo_inteface.set_box_x(400f32);
+            industrial_demo_inteface.set_box_y(400f32 / 1.7 + box_position_delta - 400f32);
+        } else {
+            industrial_demo_inteface.set_box_x(400f32 - box_position_delta + 450f32);
+            industrial_demo_inteface.set_box_y((box_position_delta - 50f32) / 1.7 + 50f32);
+        }
+
+
+        if self.animation_progress_permill < 750 {
             self.animation_progress_permill += 1;
         } else {
             self.animation_progress_permill = 0;
@@ -169,15 +185,7 @@ pub fn render_text(font: rusttype::Font, text: &str) -> slint::Image {
 
     let mut shadow_buffer = image::RgbaImage::new(400, 200);
     let shadow_color = image::Rgba([0x4c, 0x84, 0xb3, 0x1b]);
-    draw_text_rusttype(
-        &mut shadow_buffer,
-        &font,
-        scale,
-        x,
-        y,
-        shadow_color,
-        text,
-    );
+    draw_text_rusttype(&mut shadow_buffer, &font, scale, x, y, shadow_color, text);
     let shadow = shadow_buffer.clone();
     let shadow = imageops::fast_blur(&shadow, 1.0);
     // let shadow = imageops::unsharpen(shadow.borrow(), 10.0, 100);

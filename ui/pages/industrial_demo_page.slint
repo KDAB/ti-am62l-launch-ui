@@ -37,6 +37,10 @@ export component IndustrialDemoPage inherits Rectangle {
     button := Button25D {
         x: arrow-left.x + 30px;
         y: arrow-left.y + 50px;
+
+        changed checked => {
+            IndustrialInterface.running = !self.checked;
+        }
     }
 
     conveyor-top := Image {
@@ -46,11 +50,11 @@ export component IndustrialDemoPage inherits Rectangle {
         image-fit: ImageFit.preserve;
         source: @image-url("../resources/demos/industrial/conveyor-s.png");
     }
-    
+
     conveyor-mid := Image {
         x: conveyor-top.x + 105px;
         y: conveyor-top.y + conveyor-top.height - 75px;
-        
+
         image-fit: ImageFit.preserve;
         source: @image-url("../resources/demos/industrial/conveyor-s-mirrored.png");
     }
@@ -72,7 +76,7 @@ export component IndustrialDemoPage inherits Rectangle {
 
     //     source: @image-url("../resources/demos/industrial/number-2.png");
     // }
-    
+
     robo := Image {
         x: conveyor-top.x + conveyor-top.width;
         y: background-image.content-rect-y + 0px;
@@ -103,7 +107,7 @@ export component IndustrialDemoPage inherits Rectangle {
 
         image-fit: ImageFit.preserve;
         source: IndustrialInterface.box-image;
-        
+
         // animate x {
         //     duration: 10000ms;
         // }
