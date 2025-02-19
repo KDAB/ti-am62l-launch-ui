@@ -3,11 +3,13 @@ use crate::ZoomFactor;
 use geo::LineString;
 use image::ImageBuffer;
 use image::Rgba;
-use slint::{ComponentHandle};
+use plotters::style::text_anchor::Pos;
+use serde::{Deserialize, Serialize};
+use slint::ComponentHandle;
 
 const FLOOR_PLAN_IMAGE_HEIGHT: u32 = 1040;
 const FLOOR_PLAN_IMAGE_WIDTH: u32 = 1180;
-const FLOOR_CIRCLE_RADIUS:u32 = 10;
+const FLOOR_CIRCLE_RADIUS: u32 = 10;
 
 pub const AGNLE_STEP: f64 = 1.8;
 pub const NUMBER_OF_STEPS: usize = 3700;
@@ -63,6 +65,12 @@ pub struct RoboPos {
     pub y2: u32,
 }
 
+#[derive(Serialize, Deserialize)]
+pub struct Position {
+    pub x: u32,
+    pub y: u32,
+    pub direction: f64,
+}
 struct FloorImage {
     width: u32,
     height: u32,
@@ -187,6 +195,15 @@ impl RoboBackend {
         demo_interface.set_robo_pos_x(robo_pos.x1 as f32 * self.floor_image.scale_factor);
         demo_interface.set_robo_pos_y(robo_pos.y1 as f32 * self.floor_image.scale_factor);
         demo_interface.set_robo_floor_image(image);
+    }
+
+    pub fn current_position(&self) -> Position {
+        let pos = self.pos_buffer[self.pos_index % self.pos_buffer.len()];
+        Position {
+            x: pos.x1,
+            y: pos.y1,
+            direction: pos.angle,
+        }
     }
 
     fn with_mut_ui_data(&mut self, fun: impl Fn(&mut Self, RoboInterface<'_>)) {

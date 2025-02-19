@@ -5,6 +5,9 @@ mod charger;
 mod energy_monitor;
 mod industrial;
 mod robo;
+use clap::Parser;
+use rumqttc::{Client, Event, Incoming, MqttOptions,QoS};
+use serde_json;
 
 slint::include_modules!();
 
@@ -20,8 +23,24 @@ macro_rules! register_singleton_callback {
     }
 }
 
+#[derive(Parser)]
+#[command(version, about, long_about = None)]
+struct Args {
+    #[arg(long)]
+    mqtt_host: Option<String>,
+    mqtt_port: Option<u16>,
+}
+
 fn main() -> Result<(), slint::PlatformError> {
+    let args = Args::parse();
+    let mqtt_broker_host_address = args.mqtt_host.unwrap_or(String::from("127.0.0.1"));
+    let mqtt_broker_port = args.mqtt_port.unwrap_or(1883);
+
     let ui = AppWindow::new()?;
+
+    // setup MQTT client
+    let mqtt_options = MqttOptions::new("TI-demo-box", mqtt_broker_host_address, mqtt_broker_port);
+    let (mqtt_client, mut mqtt_eventloop) = Client::new(mqtt_options, 10);
 
     let charger_backend = charger::ChargerDemoBackend::new(&ui);
 
@@ -35,7 +54,8 @@ fn main() -> Result<(), slint::PlatformError> {
 
     let demo_loader = ui.global::<DemoLoader>();
     demo_loader.on_index_changed({
-        let demo_update_timer: slint::Timer = slint::Timer::default();
+        let demo_update_timer = slint::Timer::default();
+        let mqtt_update_timer = slint::Timer::default();
         let ui_handle = ui.as_weak();
         move || {
             let ui = ui_handle.unwrap();
@@ -46,26 +66,52 @@ fn main() -> Result<(), slint::PlatformError> {
             demo_update_timer.stop();
 
             match demo_index {
-                1 => demo_update_timer.start(
-                    slint::TimerMode::Repeated,
-                    std::time::Duration::from_millis(33),
-                    {
-                        let robo_backend = robo_backend.clone();
-                        move || {
-                            robo_backend.borrow_mut().task();
-                        }
-                    },
-                ),
-                2 => demo_update_timer.start(
-                    slint::TimerMode::Repeated,
-                    std::time::Duration::from_millis(40),
-                    {
-                        let industrial_backend = industrial_backend.clone();
-                        move || {
-                            industrial_backend.borrow_mut().task();
-                        }
-                    },
-                ),
+                1 => {
+                    demo_update_timer.start(
+                        slint::TimerMode::Repeated,
+                        std::time::Duration::from_millis(33),
+                        {
+                            let robo_backend = robo_backend.clone();
+                            move || {
+                                robo_backend.borrow_mut().task();
+                            }
+                        },
+                    );
+                    mqtt_update_timer.start(
+                        slint::TimerMode::Repeated,
+                        std::time::Duration::from_millis(500),
+                        {
+                            let mqtt_client = mqtt_client.clone();
+                            let robo_backend = robo_backend.clone();
+                            move || {
+                                let robo_backend = robo_backend.borrow();
+                                let position = robo_backend.current_position();
+                                let _ = mqtt_client.publish("robo-vac", QoS::AtMostOnce, true, serde_json::to_string(&position).unwrap());
+                            }
+                        },
+                    );
+                }
+                2 => {
+                    demo_update_timer.start(
+                        slint::TimerMode::Repeated,
+                        std::time::Duration::from_millis(40),
+                        {
+                            let industrial_backend = industrial_backend.clone();
+                            move || {
+                                industrial_backend.borrow_mut().task();
+                            }
+                        },
+                    );
+                    mqtt_update_timer.start(
+                        slint::TimerMode::Repeated,
+                        std::time::Duration::from_millis(500),
+                        {
+                            let _industrial_backend = industrial_backend.clone();
+                            move || {
+                            }
+                        },
+                    );
+                }
                 3 => {
                     energy_monitor_backend.borrow_mut().task(); // do an initial task run first
                     demo_update_timer.start(
@@ -87,7 +133,7 @@ fn main() -> Result<(), slint::PlatformError> {
                         move || {
                             charger_backend.borrow_mut().task();
                         }
-                    }
+                    },
                 ),
                 _ => println!("UNHANDLED DEMO INDEX"),
             }
@@ -106,6 +152,45 @@ fn main() -> Result<(), slint::PlatformError> {
             }
         },
     );
+
+    let _mqtt_thread = std::thread::spawn(move || {
+        println!("MQTT thread started");
+
+        while let Ok(event) = mqtt_eventloop.recv() {
+            match event {
+                Ok(event) => {
+                    if let Event::Incoming(Incoming::Publish(_message)) = event {
+                        println!("MQTT Incoming message");
+                    }
+                }
+                Err(err) => {
+                    println!("MQTT error: {}", err);
+                    break;
+                }
+            }
+            // if let Ok(Event::Incoming(Incoming::Publish(message))) = event {
+            //     let payload = std::str::from_utf8(message.payload.as_ref());
+            //     if payload.is_ok() {
+            //         // let payload = payload.unwrap();
+            //         // let serialized = serde_json::from_str(payload);
+            //         // if serialized.is_ok() {
+            //         //     let physiological_data: PhysiologicalData = serialized.unwrap();
+
+            //         //     let ui_handle_clone = ui_handle.clone();
+            //         //     let result = slint::invoke_from_event_loop(move || {
+            //         //         // do UI stuff from the thread that owns the UI (i.e. from the main thread)
+            //         //         let ui = ui_handle_clone.unwrap();
+            //         //         on_received_physiological_data(ui, physiological_data);
+            //         //     });
+            //         //     if result.is_err() {
+            //         //         log::error!(target: "ui_events", "error updating UI data from mqtt thread");
+            //         //     }
+            //         // }
+            //     }
+            // }
+        }
+        println!("MQTT quit polling event loop");
+    });
 
     ui.run()
 }
