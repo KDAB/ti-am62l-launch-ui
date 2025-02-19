@@ -1,5 +1,6 @@
 use super::{AppWindow, IndustrialInterface};
 use image::{imageops, EncodableLayout, ImageBuffer, Rgba};
+use serde::{Deserialize, Serialize};
 use slint::ComponentHandle;
 
 pub struct IndustrialDemoAssets {
@@ -45,6 +46,14 @@ pub struct IndustrialDemoBackend {
     animation_progress_permill: u16,
     image_buffer: image::ImageBuffer<Rgba<u8>, Vec<u8>>,
     ui_handle: slint::Weak<AppWindow>,
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct Position {
+    x: u32,
+    y: u32,
+    progress: f32,
+    count: u32,
 }
 
 impl IndustrialDemoBackend {
@@ -110,7 +119,6 @@ impl IndustrialDemoBackend {
             industrial_demo_inteface.set_box_y((box_position_delta - 50f32) / 1.7 + 50f32);
         }
 
-
         if self.animation_progress_permill < 750 {
             self.animation_progress_permill += 1;
         } else {
@@ -131,6 +139,18 @@ impl IndustrialDemoBackend {
                 format!("count: {}", self.animation_counter).as_str(),
             );
             industrial_demo_inteface.set_text_image(text_image);
+        }
+    }
+
+    pub fn current_position(&self) -> Position {
+        let ui = self.ui_handle.unwrap();
+        let industrial_demo_inteface = ui.global::<IndustrialInterface>();
+
+        Position {
+            x: industrial_demo_inteface.get_box_x() as u32,
+            y: industrial_demo_inteface.get_box_y() as u32,
+            progress: (self.animation_progress_permill as f32 * 100f32) / 751f32,
+            count: self.animation_counter as u32,
         }
     }
 }
