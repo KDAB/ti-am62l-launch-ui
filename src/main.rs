@@ -7,6 +7,7 @@ mod industrial;
 mod robo;
 use clap::Parser;
 use rumqttc::{Client, Event, Incoming, MqttOptions, QoS};
+use serde::{Deserialize, Serialize};
 use serde_json;
 
 slint::include_modules!();
@@ -57,6 +58,8 @@ fn main() -> Result<(), slint::PlatformError> {
         let demo_update_timer = slint::Timer::default();
         let mqtt_update_timer = slint::Timer::default();
         let ui_handle = ui.as_weak();
+        let mqtt_client = mqtt_client.clone();
+
         move || {
             let ui = ui_handle.unwrap();
             let demo_loader = ui.global::<DemoLoader>();
@@ -156,14 +159,25 @@ fn main() -> Result<(), slint::PlatformError> {
     });
 
     let sys_update_timer = slint::Timer::default();
+
     sys_update_timer.start(
         slint::TimerMode::Repeated,
         std::time::Duration::from_millis(1000),
         {
             let app_window_backend = AppWindowBackend::new(&ui);
+            let mqtt_client = mqtt_client.clone();
             move || {
                 let app_window_backend = app_window_backend.clone();
-                app_window_backend.borrow_mut().task();
+                let mut app_window_backend = app_window_backend.borrow_mut();
+                app_window_backend.task();
+
+                let sys_info = app_window_backend.get_sys_info();
+                let _ = mqtt_client.publish(
+                    "am62l-sys-info",
+                    QoS::AtMostOnce,
+                    true,
+                    serde_json::to_string(&sys_info).unwrap(),
+                );
             }
         },
     );
@@ -193,19 +207,25 @@ fn main() -> Result<(), slint::PlatformError> {
 struct AppWindowBackend {
     sys_info: sysinfo::System,
     ui_handle: slint::Weak<AppWindow>,
+    sys_info_data: SysInfo,
+}
+
+#[derive(Copy, Clone, Serialize, Deserialize)]
+struct SysInfo {
+    cpu_load: i32,
+    ram_load: i32,
 }
 
 impl AppWindowBackend {
     pub fn new(ui: &AppWindow) -> std::rc::Rc<std::cell::RefCell<Self>> {
-        let this = std::rc::Rc::new(std::cell::RefCell::new(Self {
+        std::rc::Rc::new(std::cell::RefCell::new(Self {
             sys_info: sysinfo::System::new_with_specifics(
                 sysinfo::RefreshKind::new()
                     .with_cpu(sysinfo::CpuRefreshKind::everything().without_frequency()),
             ),
             ui_handle: ui.as_weak(),
-        }));
-
-        this
+            sys_info_data: SysInfo{ cpu_load:0, ram_load: 0},
+        }))
     }
 
     pub fn task(&mut self) {
@@ -222,9 +242,16 @@ impl AppWindowBackend {
             .refresh_memory_specifics(sysinfo::MemoryRefreshKind::everything().without_swap());
         let ram_load = self.sys_info.used_memory() as f32 / self.sys_info.total_memory() as f32;
 
+        self.sys_info_data.cpu_load = cpu_load_total as i32;
+        self.sys_info_data.ram_load = ram_load as i32;
+
         let ui = self.ui_handle.unwrap();
         let system_resources_data = ui.global::<SystemResourcesData>();
-        system_resources_data.set_cpu_load_total(cpu_load_total as i32);
-        system_resources_data.set_ram_load(ram_load as i32);
+        system_resources_data.set_cpu_load_total(self.sys_info_data.cpu_load);
+        system_resources_data.set_ram_load(self.sys_info_data.ram_load);
+    }
+
+    pub fn get_sys_info(&self) -> SysInfo {
+        self.sys_info_data
     }
 }
