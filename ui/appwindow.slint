@@ -21,7 +21,7 @@ export component AppWindow inherits Window {
     width: 1920px;
     height: 1080px;
     // no-frame: true;
-    
+
     background-image := Image {
         property <length> content-rect-x: 669px;
         property <length> content-rect-y: 242px;
@@ -31,39 +31,39 @@ export component AppWindow inherits Window {
         source: @image-url("resources/background.png");
         // z: 10;
     }
-    
+
     menu-bar := DemoMenu {
         x: background-image.content-rect-x;
         y: 155px;
-        
+
         width: background-image.content-rect-width;
-        
+
         alignment: LayoutAlignment.stretch;
     }
-    
+
     side-bar := GridLayout {
         property <length> horizontal-margin: (system-resources-tile.width - demo-description.width) / 2;
 
         x: root.border - horizontal-margin;
         y: 200px;
-        
+
         height: 813px;
-        
+
         spacing: 20px;
-        
+
         demo-title := Text {
             col: 1;
             row: 0;
-            
+
             color: white;
             font-weight: FontWeights.light;
             font-size: 25px;
             text: DemoLoader.demo-title;
-            
+
             horizontal-alignment: TextHorizontalAlignment.left;
             vertical-alignment: TextVerticalAlignment.center;
         }
-        
+
         demo-description := TextView {
             col: 1;
             row: 1;
@@ -88,12 +88,12 @@ export component AppWindow inherits Window {
             }
         }
     }
-    
+
     demo-view := DemoView {
         x: background-image.content-rect-x;
         y: background-image.content-rect-y;
         z: -1;
-        
+
         width: background-image.content-rect-width;
         height: background-image.content-rect-height;
 

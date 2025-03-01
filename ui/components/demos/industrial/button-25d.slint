@@ -25,10 +25,10 @@ export component Button25D inherits Rectangle {
         image-fit: ImageFit.preserve;
         source: @image-url("./assets/button-bottom.png");
     }
-    
+
     mid := Image {
         y: -32px + bottom.y + (touch.pressed ? 20px : 0px);
-        
+
         image-fit: ImageFit.preserve;
         source: @image-url("./assets/button-mid.png");
 
@@ -58,7 +58,7 @@ export component Button25D inherits Rectangle {
                 opacity: checked ? 1 : 0;
                 source: @image-url("./assets/button-icon-start.png");
             }
-            
+
             stop-icon := Image {
                 x: 45px;
                 y: 27px;
