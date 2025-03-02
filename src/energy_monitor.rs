@@ -77,13 +77,6 @@ impl EnergyMonitorBackend {
         energy_monitor_interface.set_graph(graph);
     }
 
-    // TODO -> create this function (and the ui_handle struct member?) with another macro
-    fn with_mut_ui_data(&mut self, fun: impl Fn(&mut Self, EnergyMonitorInterface<'_>)) {
-        self.ui_handle
-            .upgrade()
-            .map(|ui| fun(self, ui.global::<EnergyMonitorInterface>()));
-    }
-
     pub fn generate_data(&mut self) {
         let seconds_since_epoch = seconds_since_epoch();
         if seconds_since_epoch.is_none() {

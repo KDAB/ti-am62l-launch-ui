@@ -3,7 +3,6 @@ use crate::ZoomFactor;
 use geo::LineString;
 use image::ImageBuffer;
 use image::Rgba;
-use plotters::style::text_anchor::Pos;
 use serde::{Deserialize, Serialize};
 use slint::ComponentHandle;
 
@@ -204,12 +203,6 @@ impl RoboBackend {
             y: pos.y1,
             direction: pos.angle,
         }
-    }
-
-    fn with_mut_ui_data(&mut self, fun: impl Fn(&mut Self, RoboInterface<'_>)) {
-        self.ui_handle
-            .upgrade()
-            .map(|ui| fun(self, ui.global::<RoboInterface>()));
     }
 
     fn change_zoom_factor(&mut self) {
