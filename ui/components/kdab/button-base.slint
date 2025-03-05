@@ -46,11 +46,11 @@ export component ButtonBase {
             shadow.visible: false;
         }
         pressed when touch-area.pressed || root.pressed-override : {
-            stroke-and-fill.background: Palette.selected-backround;
+            stroke-and-fill.background: Palette.selected-background;
             shadow.opacity: 0.5;
         }
         selected when root.selected : {
-            stroke-and-fill.background: Palette.selected-backround;
+            stroke-and-fill.background: Palette.selected-background;
             stroke-and-fill.border-color: Palette.selected-border;
             shadow.x: -8px;
             shadow.y: -10px;

@@ -31,7 +31,7 @@ component DropItem {
 
     states [
         pressed when touch-area.pressed : {
-            border.background: Palette.selected-backround;
+            border.background: Palette.selected-background;
         }
         selected when root.selected : {
             border.background: Palette.item-selected-background;
@@ -79,7 +79,7 @@ component DropMenuBox {
         
             states [
                 pressed when touch-area.pressed : {
-                    dropdown-border.background: Palette.selected-backround;
+                    dropdown-border.background: Palette.selected-background;
                 }
             ]
         }
