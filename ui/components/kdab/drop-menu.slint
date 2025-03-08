@@ -14,7 +14,7 @@ component DropItem {
     touch-area := TouchArea {
        border := Rectangle {
             x: 0;
-            width: root.width - LayoutSpec.default-padding;
+            width: root.width;
             border-bottom-right-radius: self.height / 2;
             border-top-right-radius: self.border-bottom-right-radius;
 
@@ -50,9 +50,9 @@ component DropMenuBox {
     in property <bool> outer-focus;
 
     callback toggle-menu-open();
-    
+
     forward-focus: text-input;
-    
+
     // child components
     if text-input.has-focus && root.enabled: Image {
         x: -8px;
@@ -76,7 +76,7 @@ component DropMenuBox {
             border-top-right-radius: parent.border-radius - 1px;
             border-bottom-right-radius: self.border-top-right-radius;
 
-        
+
             states [
                 pressed when touch-area.pressed : {
                     dropdown-border.background: Palette.selected-background;
@@ -91,7 +91,7 @@ component DropMenuBox {
         padding-top: 4px;
         padding-bottom: 4px;
         spacing: LayoutSpec.default-spacing;
-    
+
         Rectangle {
             clip: true;
 
@@ -180,6 +180,8 @@ export component DropMenu {
     out property <StandardListViewItem> current-value: box.current-value;
 
     property <length> popup-menu-height: 250px;
+    property <length> popup-viewport-x: 0px;
+    property <length> popup-viewport-y: 0px;
 
     width: max(236px, box.min-width);
     height: max(48px, box.min-height);
@@ -201,12 +203,17 @@ export component DropMenu {
             popup.show();
         }
     }
-  
+
     popup := PopupWindow {
         width: root.width;
         height: root.height + root.popup-menu-height;
-        // TODO -> close-policy: close-on-click-outside;
+        close-policy: close-on-click-outside;
 
+        init => {
+            // Restore the view port position of the flickable
+            flickable.viewport-x = parent.popup-viewport-x;
+            flickable.viewport-y = parent.popup-viewport-y;
+        }
         // popup menu
         Rectangle {
             x: 8px;
@@ -216,20 +223,23 @@ export component DropMenu {
             border-radius: BorderSpec.input-border-radius;
             clip: true;
             background: Palette.background;
-           
-             NoClipScrollView {
+
+            flickable := NoClipScrollView {
                 x: 0;
                 y: root.height / 2;
                 width: parent.width - LayoutSpec.small-padding;
                 height: parent.height - root.height / 2;
-                
+
                 for item[index] in root.model : DropItem {
                      text: item.text;
                      selected: index == root.current-item;
 
                      clicked => {
-                         root.current-item = index;
-                         popup.close();
+                        root.current-item = index;
+                        root.popup-viewport-x = parent.viewport-x;
+                        root.popup-viewport-y = parent.viewport-y;
+
+                        popup.close();
                      }
                 }
              }
@@ -258,6 +268,6 @@ export component DropMenu {
             toggle-menu-open => {
                 popup.close();
             }
-        }   
+        }
      }
  }

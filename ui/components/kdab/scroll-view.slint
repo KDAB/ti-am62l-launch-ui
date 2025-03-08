@@ -63,7 +63,7 @@ export component ScrollBar {
             reject
         }
     }
-    
+
     states [
          pressed when touch-area.pressed: {
             thumb.background: Palette.selected-background;
@@ -122,16 +122,14 @@ export component ScrollView {
     }
 }
 
-export component NoClipScrollView inherits ScrollView {
-    bar-padding: LayoutSpec.small-padding;
-
+export component NoClipScrollView inherits Flickable {
     VerticalLayout {
         alignment: start;
         padding-top: LayoutSpec.small-padding;
         padding-bottom: LayoutSpec.small-padding;
 
         @children
-    }   
+    }
 }
 
 export component ListView inherits ScrollView {
